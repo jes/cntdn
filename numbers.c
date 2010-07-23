@@ -24,9 +24,7 @@ int op(int o, int n1, int n2) {
 	case ADD: return n1 + n2;
 	case SUB: return n1 - n2;
 	case MUL: return n1 * n2;
-	case DIV:
-		if((n2 == 0) || (n1 % n2 != 0)) return -1;
-		return n1 / n2;
+	case DIV: return n1 / n2;
 	}
 
 	return 0;
@@ -56,7 +54,7 @@ void print_vals(void) {
 	}
 }
 
-/* recursively solve the game */
+/* recursively solve the game, returning 1 if solved and 0 otherwise */
 int solve(void) {
 	int i, j, o;
 	int k;
@@ -129,7 +127,7 @@ int main(int argc, char **argv) {
 	}
 	numbers = 6;
 
-	/* recursively solve */
+	/* solve these numbers */
 	if(solve() == 1)	print_vals();
 	else	fprintf(stderr, "No solution.\n");
 

@@ -31,3 +31,12 @@ void make_players(void) {
 
   for(i = 0; i < players; i++) read_name(i);
 }
+
+/* show player scores */
+void show_scores(void) {
+  int i;
+
+  for(i = 0; i < players; i++) {
+    printf("%s has %d points.\n", player[i].name, player[i].score);
+  }
+}

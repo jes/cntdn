@@ -24,12 +24,23 @@ void parse_opts(int argc, char **argv);
 /* players.c */
 typedef struct {
   char *name;
+  int score;
 } Player;
 extern Player *player;
 
 void make_players(void);
+void show_scores(void);
 
 /* strings.c */
 const char *get_name(void);
+
+/* games.c */
+void letters_round(void);
+void numbers_round(void);
+void teatime_teaser(void);
+void conundrum(void);
+
+/* dictcorner.c */
+void origin_of_words(void);
 
 #endif

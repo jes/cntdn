@@ -12,16 +12,26 @@ void die(const char *reason) {
 }
 
 int main(int argc, char **argv) {
-  int i;
-
   srand(time(NULL));
 
   parse_opts(argc, argv);
 
   make_players();
 
-  for(i = 0; i < players; i++)
-    printf("Player %d is %s.\n", i+1, player[i].name);
+  letters_round(); letters_round(); letters_round(); letters_round();
+  numbers_round();
+  teatime_teaser();
+
+  letters_round(); letters_round(); letters_round(); letters_round();
+  origin_of_words();
+  numbers_round();
+  teatime_teaser();
+
+  letters_round(); letters_round(); letters_round();
+  numbers_round();
+  conundrum();
+
+  show_scores();
 
   return 0;
 }

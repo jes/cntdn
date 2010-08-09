@@ -3,7 +3,7 @@
 
 CFLAGS=-Wall -g
 OUT=numbers cntdn
-OBJS=cntdn.o opts.o players.o strings.o
+OBJS=cntdn.o opts.o players.o strings.o games.o dictcorner.o
 PREFIX?=/usr
 
 all: $(OUT)

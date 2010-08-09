@@ -1,0 +1,52 @@
+Things that need to happen:
+
+game format:
+four letter rounds
+number round
+teatime teaser
+four letter rounds
+origin of words
+number round
+teatime teaser
+three letter rounds
+number round
+conundrum
+
+other things to do:
+find out about when celebrity guest speaks
+get a proper dictionary with definitions
+
+numbers round:
+24 numbers available
+6 chosen (x large, y small)
+pick x and y before any numbers are revealed
+4 large (25, 50, 75, 100)
+20 small (2 each of 1..10)
+Player: "4 {large, from the top} and 2 {small, from the bottom} please, Rachel"
+target 100..999
+30 second timer
+each player declares the answer they reached
+get best to describe solution
+  "10 points are given for an exact answer, 7 points for a non-exact solution
+   up to 5 from the target, and 5 points for a solution between 6 and 10 from
+   the target. If neither contestant can get within 10, no points are awarded."
+
+letters round:
+9 letters
+pick consonant or vowel, letter revealed, repeat
+at least 3 vowels and 4 consonants
+letter probabilities weighted to english text frequency
+30 second timer
+each player declares number of letters
+get worst to say word, then best
+award n points to winner for n letters, or 18 points for 9 letters
+dictionary corner give their best word, with the celebrity claiming not to have
+  found the word, and Susie gives a definition.
+
+conundrum:
+Jeff: "It's time to reveal today's... countdown conundrum."
+all 9 letters are revealed
+30 second timer
+answer on buzzer
+Jeff: "Let's take a look..."
+answer flips over slowly

@@ -55,7 +55,8 @@ void print_vals(void) {
   }
 }
 
-/* recursively solve the game, returning 1 if solved and 0 otherwise */
+/* recursively solve the game, returning 1 if solved and 0 otherwise
+   TODO: BFS to get simplest solutions */
 int solve(void) {
   int i, j, o;
   int k;

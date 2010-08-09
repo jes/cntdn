@@ -7,6 +7,8 @@
 char letter[10];
 int turn;
 
+static sig_atomic_t stop_timer;
+
 /* get the nth letter for the current round */
 static void get_letter(int n) {
   char *line;
@@ -39,6 +41,11 @@ static int length_cmp(const void *one, const void *two) {
   return player[*a].length - player[*b].length;
 }
 
+/* signal handler to cancel the countdown timer */
+static void cancel_timer(int sig) {
+  stop_timer = 1;
+}
+
 /* play one letters round */
 void letters_round(void) {
   int i, j, k;
@@ -58,15 +65,21 @@ void letters_round(void) {
   /* read letter choices and generate letters */
   for(i = 0; i < 9; i++) get_letter(i);
 
+  /* install signal handler that will cancel the timer */
+  stop_timer = 0;
+  signal(SIGINT, cancel_timer);
+
   /* wait for players to think */
-  /* TODO: make ^C cancel the timer during this part */
-  for(i = timer; i > 0; i--) {
+  for(i = timer; i > 0 && !stop_timer; i--) {
     printf("\r                ");/* clear the line */
     printf("\r%d second%s.", i, (i == 1 ? "" : "s"));
     fflush(stdout);
     sleep(1);
   }
   printf("\r                \r");
+
+  /* re-instate default SIGINT handler */
+  signal(SIGINT, SIG_DFL);
 
   /* ask each player for their word length */
   for(i = 0; i < players; i++) {

@@ -23,8 +23,10 @@ static const char cons_string[] =
 static const int num_consonants = sizeof(cons_string) / sizeof(*cons_string);
 
 /* ANSI colours */
+const char *colour_off = "\e[0m";
+const char *letter_colour = "\e[1;37;44m";
 const char const *colour[] = {
-  "\e[0m", "\e[31m", "\e[32m", "\e[33m", "\e[34m", "\e[35m", "\e[36m"
+  "\e[31m", "\e[32m", "\e[33m", "\e[34m", "\e[35m", "\e[36m"
 };
 const int num_colours = sizeof(colour) / sizeof(*colour);
 

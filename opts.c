@@ -26,6 +26,8 @@ static void usage(void) {
   "Usage: %s [OPTIONS...]\n"
   "\n"
   "Options:\n"
+  "  -c, --colour       Enable coloured output (default if stdout is a\n"
+  "                     terminal)\n"
   "  -f, --format=STR   Set the game format as described below\n"
   "                     (default: llllngtllllontlllnc)\n"
   "  -h, --help         Display this help\n"
@@ -48,10 +50,13 @@ void parse_opts(int argc, char **argv) {
 
   program_name = argv[0];
 
+  if(!isatty(STDOUT_FILENO)) nocolour = 1;
+
   opterr = 1;
 
-  while((c = getopt_long(argc, argv, "f:hnp:t:", opts, NULL)) != -1) {
+  while((c = getopt_long(argc, argv, "cf:hnp:t:", opts, NULL)) != -1) {
     switch(c) {
+      case 'c': nocolour = 0;           break;
       case 'f': format = optarg;        break;
       case 'h': usage(); exit(0);       break;
       case 'n': nocolour = 1;           break;

@@ -16,7 +16,7 @@ static void get_letter(int n) {
   do {
     repeat = 0;
 
-    printf("%s, vowel or consonant? [vc] ", player[turn].name);
+    printf("vowel or consonant? [vc] ");
     line = get_line();
 
     if(tolower(*line) == 'v') letter[n] = get_vowel();
@@ -25,9 +25,11 @@ static void get_letter(int n) {
     /* TODO: limitations on amounts of vowels and consonants */
   } while(repeat);
 
+  printf("%s ", (nocolour ? "" : letter_colour));
   for(i = 0; i <= n; i++) {
-    printf("%c%c", letter[i], (i == n ? '\n' : ' '));
+    printf("%c ", letter[i]);
   }
+  printf("%s\n", (nocolour ? "" : colour_off));
 }
 
 /* sort by word length for qsort */
@@ -50,6 +52,8 @@ void letters_round(void) {
       assign scores
       dictionary corner words */
   printf(" *** Letters round\n");
+
+  printf("It is %s's turn to choose letters.\n", player[turn].name);
 
   /* read letter choices and generate letters */
   for(i = 0; i < 9; i++) get_letter(i);

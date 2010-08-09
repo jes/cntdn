@@ -10,25 +10,30 @@ Player *player;
 static void read_name(int n) {
   char *line;
   char *p;
-  int col_num = (n % (num_colours-1)) + 1;
+  int col_num = n % num_colours;
 
-  printf("Name for %splayer %d%s: ", (nocolour ? "" : colour[col_num]), n + 1,
-         colour[COLOUR_OFF]);
+  printf("Name for player %d: %s", n + 1, (nocolour ? "" : colour[col_num]));
   line = get_line();
+  printf("%s", (nocolour ? "" : colour_off));
 
   if((p = strchr(line, '\n'))) *p = '\0';
 
   if(*line == '\0') player[n].raw_name = strdup(get_name());
   else player[n].raw_name = strdup(line);
 
+  /* if we're using colour, add escape sequences to the proper name */
   if(nocolour) player[n].name = player[n].raw_name;
   else {
-    player[n].name = malloc(strlen(colour[(n + 1) % num_colours]) +
+    player[n].name = malloc(strlen(colour[col_num]) +
                             strlen(player[n].raw_name) +
-                            strlen(colour[COLOUR_OFF]) + 1);
-    sprintf(player[n].name, "%s%s%s", colour[(n + 1) % num_colours],
-            player[n].raw_name, colour[COLOUR_OFF]);
+                            strlen(colour_off) + 1);
+    sprintf(player[n].name, "%s%s%s", colour[col_num],
+            player[n].raw_name, colour_off);
   }
+
+  /* if a name wasn't supplied, inform the player of his name */
+  if(*line == '\0')
+    printf("Player %d will be called %s.\n", n + 1, player[n].name);
 }
 
 /* compare player scores for qsort */

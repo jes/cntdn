@@ -43,7 +43,8 @@ void make_players(void);
 void show_scores(int endgame);
 
 /* strings.c */
-#define COLOUR_OFF 0
+extern const char *letter_colour;
+extern const char *colour_off;
 extern const char const *colour[];
 extern const int num_colours;
 

@@ -23,11 +23,14 @@ extern char *program_name;
 
 extern int players;
 extern int timer;
+extern char *format;
+extern int nocolour;
 
 void parse_opts(int argc, char **argv);
 
 /* players.c */
 typedef struct {
+  char *raw_name;
   char *name;
   int length;
   char *word;
@@ -37,9 +40,13 @@ typedef struct {
 extern Player *player;
 
 void make_players(void);
-void show_scores(void);
+void show_scores(int endgame);
 
 /* strings.c */
+#define COLOUR_OFF 0
+extern const char const *colour[];
+extern const int num_colours;
+
 const char *get_name(void);
 char get_vowel(void);
 char get_consonant(void);
@@ -52,5 +59,6 @@ void conundrum(void);
 
 /* dictcorner.c */
 void origin_of_words(void);
+void guest_chat(void);
 
 #endif

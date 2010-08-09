@@ -39,7 +39,7 @@ static int length_cmp(const void *one, const void *two) {
 
 /* play one letters round */
 void letters_round(void) {
-  int i, j;
+  int i, j, k;
   int *player_order;
 
   /* stages:
@@ -65,8 +65,8 @@ void letters_round(void) {
 
   /* ask each player for their word length */
   for(i = 0; i < players; i++) {
-    printf("%s, how long is your word? ", player[i].name);
-    player[i].length = atoi(get_line());
+    printf("%s, how long is your word? ", player[(i + turn) % players].name);
+    player[(i + turn) % players].length = atoi(get_line());
   }
 
   /* get an aray of players sorted by word length */
@@ -78,10 +78,34 @@ void letters_round(void) {
   for(j = 0; j < players; j++) {
     i = player_order[j];
 
-    printf("%s, what is your word? ", player[i].name);
+    printf("%s, what is your %d-letter word? ", player[i].name,
+           player[i].length);
     player[i].word = strdup(get_line());
     /* TODO: check word is correct length */
-    /* TODO: ask dictionary corner about it */
+    /* TODO: ask dictionary if it is allowed, and set length=0 if not */
+  }
+
+  /* re-sort to get non-words removed */
+  qsort(player_order, players, sizeof(int), length_cmp);
+
+  /* find the best scorers */
+  for(j = players - 2; j >= 0; j--) {
+    i = player_order[j];
+
+    if(player[i].length < player[player_order[players - 1]].length) break;
+  }
+
+  /* assign points to the scorers */
+  for(k = players - 1; k > j; k--) {
+    i = player_order[k];
+
+    if(player[i].length == 9) {/* 9 letters score double */
+      printf("18 points to %s.\n", player[i].name);
+      player[i].score += 18;
+    } else {
+      printf("%d points to %s.\n", player[i].length, player[i].name);
+      player[i].score += player[i].length;
+    }
   }
 
   /* increment the player whose turn it is to choose numbers/letters */

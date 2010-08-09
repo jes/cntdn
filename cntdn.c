@@ -21,26 +21,28 @@ char *get_line(void) {
 }
 
 int main(int argc, char **argv) {
+  char *p;
+
   srand(time(NULL));
 
   parse_opts(argc, argv);
 
   make_players();
 
-  letters_round(); letters_round(); letters_round(); letters_round();
-  numbers_round();
-  teatime_teaser();
+  for(p = format; *p; p++) {
+    switch(tolower(*p)) {
+    case 'l': letters_round();   break;
+    case 'n': numbers_round();   break;
+    case 'g': guest_chat();      break;
+    case 't': teatime_teaser();  break;
+    case 'o': origin_of_words(); break;
+    case 'c': conundrum();       break;
+    default:
+      fprintf(stderr, "Unknown round letter '%c', skipping round.\n", *p);
+    }
 
-  letters_round(); letters_round(); letters_round(); letters_round();
-  origin_of_words();
-  numbers_round();
-  teatime_teaser();
-
-  letters_round(); letters_round(); letters_round();
-  numbers_round();
-  conundrum();
-
-  show_scores();
+    show_scores(*(p+1) == 0);
+  }
 
   return 0;
 }

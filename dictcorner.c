@@ -8,3 +8,8 @@
 void origin_of_words(void) {
   printf(" *** Origin of words\n");
 }
+
+/* The guest tells us a story */
+void guest_chat(void) {
+  printf(" *** Guest tells a story\n");
+}

@@ -3,6 +3,7 @@ Things that need to happen:
 game format:
 four letter rounds
 number round
+celebrity chat
 teatime teaser
 four letter rounds
 origin of words
@@ -13,6 +14,7 @@ number round
 conundrum
 
 other things to do:
+colourise output (most importantly, player names)
 make i/o more robust
 find out about when celebrity guest speaks
 get a proper dictionary with definitions

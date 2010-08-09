@@ -11,6 +11,15 @@ void die(const char *reason) {
   exit(1);
 }
 
+/* return a pointer to a static buffer containing a line read from stdin */
+char *get_line(void) {
+  static char buf[BUFLEN];
+
+  if(!fgets(buf, BUFLEN, stdin)) die("eof on stdin");
+
+  return buf;
+}
+
 int main(int argc, char **argv) {
   srand(time(NULL));
 

@@ -8,18 +8,16 @@ Player *player;
 
 /* Read and assign name for player n */
 static void read_name(int n) {
-#define BUFLEN 4096
-  char buf[BUFLEN];
+  char *line;
   char *p;
 
   printf("Name for player %d: ", n+1);
+  line = get_line();
 
-  if(!fgets(buf, BUFLEN, stdin)) die("eof on stdin");
+  if((p = strchr(line, '\n'))) *p = '\0';
 
-  if((p = strchr(buf, '\n'))) *p = '\0';
-
-  if(*buf == '\0') player[n].name = strdup(get_name());
-  else player[n].name = strdup(buf);
+  if(*line == '\0') player[n].name = strdup(get_name());
+  else player[n].name = strdup(line);
 }
 
 /* Allocate player structures */

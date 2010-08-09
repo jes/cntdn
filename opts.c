@@ -7,10 +7,12 @@
 char *program_name;
 
 int players = 1;
+int timer = 30;
 
 static struct option opts[] = {
   { "help",    no_argument,       NULL, 'h' },
   { "players", required_argument, NULL, 'p' },
+  { "timer",   required_argument, NULL, 't' },
   { NULL,      0,                 NULL, 0 }
 };
 
@@ -22,6 +24,7 @@ static void usage(void) {
   "Options:\n"
   "  -h, --help         Display this help\n"
   "  -p, --players=N    Set number of players\n"
+  "  -t, --timer=N      Set round timer in seconds\n"
   "\n"
   "Report bugs to James Stanley <james@incoherency.co.uk>\n"
   , program_name);
@@ -35,10 +38,11 @@ void parse_opts(int argc, char **argv) {
 
   opterr = 1;
 
-  while((c = getopt_long(argc, argv, "hp:", opts, NULL)) != -1) {
+  while((c = getopt_long(argc, argv, "hp:t:", opts, NULL)) != -1) {
     switch(c) {
       case 'h': usage(); exit(0);       break;
       case 'p': players = atoi(optarg); break;
+      case 't': timer = atoi(optarg);   break;
       default:  exit(1);                break;
     }
   }

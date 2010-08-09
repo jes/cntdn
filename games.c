@@ -25,11 +25,11 @@ static void get_letter(int n) {
     /* TODO: limitations on amounts of vowels and consonants */
   } while(repeat);
 
-  printf("%s ", (nocolour ? "" : letter_colour));
+  printf("%s ", letter_colour);
   for(i = 0; i <= n; i++) {
     printf("%c ", letter[i]);
   }
-  printf("%s\n", (nocolour ? "" : colour_off));
+  printf("%s\n", colour_off);
 }
 
 /* sort by word length for qsort */
@@ -58,7 +58,8 @@ void letters_round(void) {
   /* read letter choices and generate letters */
   for(i = 0; i < 9; i++) get_letter(i);
 
-  /* wait 30s for players to think */
+  /* wait for players to think */
+  /* TODO: make ^C cancel the timer during this part */
   for(i = timer; i > 0; i--) {
     printf("\r                ");/* clear the line */
     printf("\r%d second%s.", i, (i == 1 ? "" : "s"));
@@ -82,11 +83,27 @@ void letters_round(void) {
   for(j = 0; j < players; j++) {
     i = player_order[j];
 
+    if(player[i].length <= 0) continue;
+
     printf("%s, what is your %d-letter word? ", player[i].name,
            player[i].length);
     player[i].word = strdup(get_line());
-    /* TODO: check word is correct length */
-    /* TODO: ask dictionary if it is allowed, and set length=0 if not */
+
+    if(strlen(player[i].word) != player[i].length) {
+      free(player[i].word);
+
+      /* try again once if they didn't supply a suitable word */
+      printf("%s, what is your real %d-letter word? ", player[i].name,
+           player[i].length);
+      player[i].word = strdup(get_line());
+
+      if(strlen(player[i].word) != player[i].length) player[i].length = 0;
+    }
+
+    if(player[i].length > 0) {
+      /* check the word with dictionary corner */
+      if(!valid_word(player[i].word)) player[i].length = 0;
+    }
   }
 
   /* re-sort to get non-words removed */

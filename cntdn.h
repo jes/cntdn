@@ -43,10 +43,16 @@ void make_players(void);
 void show_scores(int endgame);
 
 /* strings.c */
-extern const char *letter_colour;
-extern const char *colour_off;
-extern const char const *colour[];
+#define JEFF   0
+#define SUSIE  1
+#define RACHEL 2
+#define GUEST  3
+
+extern char *letter_colour;
+extern char *colour_off;
+extern char *colour[];
 extern const int num_colours;
+extern char *pres_colour[];
 
 const char *get_name(void);
 char get_vowel(void);
@@ -61,5 +67,6 @@ void conundrum(void);
 /* dictcorner.c */
 void origin_of_words(void);
 void guest_chat(void);
+int valid_word(const char *word);
 
 #endif

@@ -14,8 +14,11 @@ void die(const char *reason) {
 /* return a pointer to a static buffer containing a line read from stdin */
 char *get_line(void) {
   static char buf[BUFLEN];
+  char *p;
 
   if(!fgets(buf, BUFLEN, stdin)) die("eof on stdin");
+
+  if((p = strchr(buf, '\n'))) *p = '\0';
 
   return buf;
 }

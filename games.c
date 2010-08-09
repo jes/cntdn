@@ -61,7 +61,7 @@ void letters_round(void) {
   /* wait 30s for players to think */
   for(i = timer; i > 0; i--) {
     printf("\r                ");/* clear the line */
-    printf("\r%d seconds.", i);
+    printf("\r%d second%s.", i, (i == 1 ? "" : "s"));
     fflush(stdout);
     sleep(1);
   }

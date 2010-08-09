@@ -40,7 +40,7 @@ static void read_name(int n) {
 static int score_cmp(const void *one, const void *two) {
   const int *a = one, *b = two;
 
-  return player[*a].score - player[*b].score;
+  return player[*b].score - player[*a].score;
 }
 
 /* Allocate player structures */
@@ -64,9 +64,14 @@ void show_scores(int endgame) {
 
   qsort(player_order, players, sizeof(int), score_cmp);
 
+  printf("\n");
+
   for(i = 0; i < players; i++) {
-    printf("%s %s %d points.\n", player[player_order[i]].name,
-           (endgame & (i == players - 1)) ? "wins with" : "has",
+    printf("  %s %s %d points.\n", player[player_order[i]].name,
+           (endgame & (player[player_order[i]].score ==
+                       player[player_order[0]].score) ? "wins with" : "has"),
            player[player_order[i]].score);
   }
+
+  printf("\n");
 }

@@ -2,14 +2,17 @@
 #James Stanley 2010
 
 CFLAGS=-Wall -g
-OUT=numbers
+OUT=numbers cntdn
+OBJS=cntdn.o opts.o players.o strings.o
 PREFIX?=/usr
 
 all: $(OUT)
 .PHONY: all
 
+cntdn: $(OBJS)
+
 clean:
-	-rm -f $(OUT)
+	-rm -f $(OUT) $(OBJS)
 .PHONY: clean
 
 install:

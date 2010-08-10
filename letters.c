@@ -87,6 +87,12 @@ void load_dictionary(const char *path) {
 /* What follows from here is only compiled if we're not part of the main cntdn
    program */
 
+static struct option opts[] = {
+  { "dictionary", required_argument, NULL, 'd' },
+  { "help",       no_argument,       NULL, 'h' },
+  { NULL,         0,                 NULL, 0 }
+};
+
 /* print the reason on stderr and terminate the program */
 void die(const char *fmt, ...) {
   va_list args;
@@ -100,6 +106,40 @@ void die(const char *fmt, ...) {
   exit(1);
 }
 
+static void usage(void) {
+  printf(
+  "cntdn - countdown game simulator\n"
+  "Usage: letters [OPTIONS...] LETTERS\n"
+  "\n"
+  "Options:\n"
+  "  -d, --dictionary=STR  Set the path to the dictionary file (default:\n"
+  "                        ./dictionary)\n"
+  "  -h, --help            Display this help\n"
+  "\n"
+  "For example, if the dictionary is in /usr/share/dict/words and the letters\n"
+  "you have are GYHDNOEUR, you would invoke letters like so:\n"
+  "  letters --dictionary=/usr/share/dict/words GYHDNOEUR\n"
+  "\n"
+  "Report bugs to James Stanley <james@incoherency.co.uk>\n"
+  );
+}
+
 int main(int argc, char **argv) {
+  int c;
+  char *dict;
+
+  opterr = 1;
+
+  while((c = getopt_long(argc, argv, "d:h", opts, NULL)) != -1) {
+    switch(c) {
+      case 'd': dict = optarg;    break;
+      case 'h': usage(); exit(0); break;
+      default:  exit(1);          break;
+    }
+  }
+
+  load_dictionary(dict);
+
+  return 0;
 }
 #endif

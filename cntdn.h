@@ -27,6 +27,7 @@ extern int timer;
 extern char *format;
 extern int nocolour;
 extern char *dictionary_path;
+extern int ignore_invalid;
 
 void parse_opts(int argc, char **argv);
 

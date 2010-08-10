@@ -1,7 +1,7 @@
 #Makefile for cntdn
 #James Stanley 2010
 
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -O3
 CNTDN_CFLAGS=$(CFLAGS) -DCNTDN
 OBJS=cntdn.o opts.o players.o strings.o games.o dictcorner.o letters.o
 PREFIX?=/usr

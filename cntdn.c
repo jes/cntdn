@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
   parse_opts(argc, argv);
 
-  load_dictionary(dictionary_path);
+  load_dictionary(dictionary_path, 9);
 
   make_players();
 

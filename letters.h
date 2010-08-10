@@ -22,7 +22,7 @@ typedef struct TrieNode {
 
 extern TrieNode *dictionary;
 
-void load_dictionary(const char *path);
+void load_dictionary(const char *path, int maxlen);
 
 #ifndef CNTDN
 /* the following is only if we're not part of the cntdn program */

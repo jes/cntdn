@@ -14,9 +14,9 @@ number round
 conundrum
 
 other things to do:
-colourise output (most importantly, player names)
+when only one player, don't do some stuff like asking word length
+might not need player names so much if only one player
 make i/o more robust
-find out about when celebrity guest speaks
 get a proper dictionary with definitions
 general talking from the presenters
 when both players get the same length who gives word first?

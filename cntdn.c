@@ -34,17 +34,15 @@ int main(int argc, char **argv) {
 
   for(p = format; *p; p++) {
     switch(tolower(*p)) {
-    case 'l': letters_round();   break;
-    case 'n': numbers_round();   break;
-    case 'g': guest_chat();      break;
-    case 't': teatime_teaser();  break;
-    case 'o': origin_of_words(); break;
-    case 'c': conundrum();       break;
+    case 'l': letters_round(); show_scores(*(p+1) == 0); break;
+    case 'n': numbers_round(); show_scores(*(p+1) == 0); break;
+    case 'g': guest_chat();                              break;
+    case 't': teatime_teaser();                          break;
+    case 'o': origin_of_words();                         break;
+    case 'c': conundrum(); show_scores(*(p+1) == 0);     break;
     default:
       fprintf(stderr, "Unknown round letter '%c', skipping round.\n", *p);
     }
-
-    show_scores(*(p+1) == 0);
   }
 
   return 0;

@@ -27,11 +27,15 @@ static void get_letter(int n) {
     /* TODO: limitations on amounts of vowels and consonants */
   } while(repeat);
 
-  printf("%s ", letter_colour);
-  for(i = 0; i <= n; i++) {
-    printf("%c ", letter[i]);
+  if(nocolour) printf("| ");
+  else printf("%s ", letter_colour);
+
+  for(i = 0; i < 9; i++) {
+    printf("%c ", (i <= n ? letter[i] : ' '));
   }
-  printf("%s\n", colour_off);
+
+  if(nocolour) printf("|\n");
+  else printf("%s\n", colour_off);
 }
 
 /* sort by word length for qsort */
@@ -70,13 +74,13 @@ void letters_round(void) {
   signal(SIGINT, cancel_timer);
 
   /* wait for players to think */
-  for(i = timer; i > 0 && !stop_timer; i--) {
-    printf("\r                ");/* clear the line */
-    printf("\r%d second%s.", i, (i == 1 ? "" : "s"));
+  for(i = timer; i >= 0 && !stop_timer; i--) {
+    printf("\r                     ");/* clear the line */
+    printf("\r%d second%s left.", i, (i == 1 ? "" : "s"));
     fflush(stdout);
     sleep(1);
   }
-  printf("\r                \r");
+  printf("\n");
 
   /* re-instate default SIGINT handler */
   signal(SIGINT, SIG_DFL);
@@ -141,6 +145,13 @@ void letters_round(void) {
       player[i].score += player[i].length;
     }
   }
+
+  /* TODO: display best word in the blue and white style */
+
+  /* ask dictionary corner if they got anything better */
+  solve_letters();
+
+  /* TODO: display dictionary corner's word in blue and white */
 
   /* increment the player whose turn it is to choose numbers/letters */
   turn++;

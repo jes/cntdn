@@ -69,5 +69,6 @@ void conundrum(void);
 void origin_of_words(void);
 void guest_chat(void);
 int valid_word(const char *word);
+void solve_letters(void);
 
 #endif

@@ -109,11 +109,15 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
                           int level, void (*callback)(const char *word)) {
   int i;
   int idx;
+  char done[26] = { 0 };
 
   if(node->end_word) callback(answer);
 
+  if(level == num_letters) return;
+
   for(i = 0; i < num_letters; i++) {
     if(used_letter[i]) continue;
+    if(done[letter_idx(letters[i])]) continue;
 
     if((idx = letter_idx(letters[i])) == -1)
       die("error: tried to solve letters '%s' containing non-letter '%c'",
@@ -122,6 +126,8 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
     if(node->child[idx]) {
       used_letter[i] = 1;
       answer[level] = letters[i];
+
+      done[letter_idx(letters[i])] = 1;
 
       recurse_solve(letters, node->child[idx], answer, level+1, callback);
 

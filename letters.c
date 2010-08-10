@@ -183,7 +183,7 @@ void die(const char *fmt, ...) {
 
 static void usage(void) {
   printf(
-  "cntdn - countdown game simulator\n"
+  "letters - countdown letters game solver\n"
   "Usage: letters [OPTIONS...] LETTERS\n"
   "\n"
   "Options:\n"

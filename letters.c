@@ -54,13 +54,13 @@ static void add_word(const char *word) {
       if(ignore_invalid) return;
 
       if(count_invalid < 5) {
-        fprintf(stderr, "Warning: '%s' contains a non-letter '%c', ignoring "
+        fprintf(stderr, "warning: '%s' contains a non-letter '%c', ignoring "
                         "word; use --ignore-invalid to suppress these "
-                        "warnings.\n",
+                        "warnings\n",
                 word, *p);
         count_invalid++;
       } else if(count_invalid == 5) {
-        fprintf(stderr, "Warning: more invalid words; suppressing warnings.\n");
+        fprintf(stderr, "warning: more invalid words; suppressing warnings\n");
         count_invalid = 6;
       }
 
@@ -86,7 +86,7 @@ void load_dictionary(const char *path, int maxlen) {
   char buf[BUFLEN];
 
   if(!(fp = fopen(path, "r")))
-    die("Unable to open '%s' for reading. Try using --dictionary", path);
+    die("error: unable to open '%s' for reading; try using --dictionary", path);
 
   /* allocate the root node */
   dictionary = make_trienode();
@@ -219,7 +219,8 @@ int main(int argc, char **argv) {
   }
 
   if(optind >= argc)
-    die("You must specify your letters. See --help for more information.");
+    die("error: you must specify your letters; see --help for more "
+        "information");
 
   letters = argv[optind];
 

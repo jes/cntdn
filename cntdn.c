@@ -22,7 +22,7 @@ char *get_line(void) {
   static char buf[BUFLEN];
   char *p;
 
-  if(!fgets(buf, BUFLEN, stdin)) die("eof on stdin");
+  if(!fgets(buf, BUFLEN, stdin)) die("error: eof on stdin");
 
   if((p = strchr(buf, '\n'))) *p = '\0';
 
@@ -49,7 +49,8 @@ int main(int argc, char **argv) {
     case 'o': origin_of_words();                         break;
     case 'c': conundrum();     show_scores(*(p+1) == 0); break;
     default:
-      fprintf(stderr, "Unknown round letter '%c', skipping round.\n", *p);
+      fprintf(stderr, "warning: unknown round letter '%c', skipping round\n",
+              *p);
     }
   }
 

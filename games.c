@@ -149,7 +149,7 @@ void letters_round(void) {
   /* TODO: display best word in the blue and white style */
 
   /* ask dictionary corner if they got anything better */
-  solve_letters();
+  dict_solve();
 
   /* TODO: display dictionary corner's word in blue and white */
 

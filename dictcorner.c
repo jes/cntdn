@@ -25,7 +25,7 @@ int valid_word(const char *word) {
 }
 
 /* Get dictionary corner to give their best word */
-void solve_letters(void) {
+void dict_solve(void) {
   /* TODO: this function */
   printf("%sNotSusie%s: Nope, we didn't get anything better than that.\n",
          pres_colour[SUSIE], colour_off);

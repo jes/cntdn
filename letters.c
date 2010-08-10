@@ -15,7 +15,11 @@ TrieNode *dictionary;
 
 #ifndef CNTDN
 static int ignore_invalid = 0;
+static int minletters = 6;
 #endif
+
+static int num_letters;
+static char *used_letter;
 
 /* return a number 0..25 to be used as a trie child index, or -1 if it's not a
    usable letter */
@@ -99,6 +103,53 @@ void load_dictionary(const char *path, int maxlen) {
   fclose(fp);
 }
 
+/* Recursively solve the letters game. Do not call this function, it is used by
+   solve_letters() to do the actual solving */
+static void recurse_solve(const char *letters, TrieNode *node, char *answer,
+                          int level, void (*callback)(const char *word)) {
+  int i;
+  int idx;
+
+  if(node->end_word) callback(answer);
+
+  for(i = 0; i < num_letters; i++) {
+    if(used_letter[i]) continue;
+
+    if((idx = letter_idx(letters[i])) == -1)
+      die("error: tried to solve letters '%s' containing non-letter '%c'",
+          letters, letters[i]);
+
+    if(node->child[idx]) {
+      used_letter[i] = 1;
+      answer[level] = letters[i];
+
+      recurse_solve(letters, node->child[idx], answer, level+1, callback);
+
+      used_letter[i] = 0;
+    }
+  }
+
+  answer[level] = '\0';
+}
+
+/* Solves the letters game for the given letters by calling 'callback' with
+   each of the words found */
+void solve_letters(const char *letters, void (*callback)(const char *word)) {
+  char *word;
+
+  num_letters = strlen(letters);
+  used_letter = malloc(num_letters);
+  memset(used_letter, 0, num_letters);
+
+  word = malloc(num_letters + 1);
+  memset(word, 0, num_letters + 1);
+
+  recurse_solve(letters, dictionary, word, 0, callback);
+
+  free(word);
+  free(used_letter);
+}
+
 #ifndef CNTDN
 /* What follows from here is only compiled if we're not part of the main cntdn
    program */
@@ -145,10 +196,14 @@ static void usage(void) {
   );
 }
 
+/* callback for solve_letters() to output words of at least minletters */
+static void output_words(const char *word) {
+  if(strlen(word) >= minletters) puts(word);
+}
+
 int main(int argc, char **argv) {
   int c;
   char *dict = "./dictionary";
-  int minletters = 6;
   char *letters;
 
   opterr = 1;
@@ -169,6 +224,8 @@ int main(int argc, char **argv) {
   letters = argv[optind];
 
   load_dictionary(dict, strlen(letters));
+
+  solve_letters(letters, output_words);
 
   return 0;
 }

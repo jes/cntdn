@@ -71,7 +71,7 @@ void conundrum(void);
 void origin_of_words(void);
 void guest_chat(void);
 int valid_word(const char *word);
-void dict_solve(void);
+void dict_solve(const char *letters);
 
 /* letters.c */
 #include "letters.h"

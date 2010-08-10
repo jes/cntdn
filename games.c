@@ -4,8 +4,8 @@
 
 #include "cntdn.h"
 
-char letter[10];
-int turn;
+static char letter[10];
+static int turn;
 
 static sig_atomic_t stop_timer;
 
@@ -149,7 +149,7 @@ void letters_round(void) {
   /* TODO: display best word in the blue and white style */
 
   /* ask dictionary corner if they got anything better */
-  dict_solve();
+  dict_solve(letter);
 
   /* TODO: display dictionary corner's word in blue and white */
 

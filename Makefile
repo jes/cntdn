@@ -2,17 +2,27 @@
 #James Stanley 2010
 
 CFLAGS=-Wall -g
-OUT=numbers cntdn
-OBJS=cntdn.o opts.o players.o strings.o games.o dictcorner.o
+CNTDN_CFLAGS=$(CFLAGS) -DCNTDN
+OBJS=cntdn.o opts.o players.o strings.o games.o dictcorner.o letters.o
 PREFIX?=/usr
 
-all: $(OUT)
+all: cntdn numbers letters
 .PHONY: all
 
 cntdn: $(OBJS)
+	$(CC) -o cntdn $(OBJS)
+
+numbers: numbers.c
+	$(CC) -o numbers numbers.c $(CFLAGS)
+
+letters: letters.c
+	$(CC) -o letters letters.c $(CFLAGS)
+
+%.o: %.c
+	$(CC) $(CNTDN_CFLAGS)  -o $@ -c $<
 
 clean:
-	-rm -f $(OUT) $(OBJS)
+	-rm -f numbers letters cntdn $(OBJS)
 .PHONY: clean
 
 install:

@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <time.h>
 
-#define BUFLEN 4096
+#define BUFLEN 8192
 
 /* cntdn.c */
-void die(const char *reason);
+void die(const char *fmt, ...);
 char *get_line(void);
 
 /* opts.c */
@@ -26,6 +26,7 @@ extern int players;
 extern int timer;
 extern char *format;
 extern int nocolour;
+extern char *dictionary_path;
 
 void parse_opts(int argc, char **argv);
 
@@ -70,5 +71,8 @@ void origin_of_words(void);
 void guest_chat(void);
 int valid_word(const char *word);
 void solve_letters(void);
+
+/* letters.c */
+#include "letters.h"
 
 #endif

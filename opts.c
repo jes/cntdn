@@ -10,14 +10,17 @@ int players = 1;
 int timer = 30;
 char *format = "llllngtllllontlllnc";
 int nocolour = 0;
+char *dictionary_path = "./dictionary";
 
 static struct option opts[] = {
-  { "format",    required_argument, NULL, 'f' },
-  { "help",      no_argument,       NULL, 'h' },
-  { "no-colour", no_argument,       NULL, 'n' },
-  { "players",   required_argument, NULL, 'p' },
-  { "timer",     required_argument, NULL, 't' },
-  { NULL,        0,                 NULL, 0 }
+  { "colour",     no_argument,       NULL, 'c' },
+  { "dictionary", required_argument, NULL, 'd' },
+  { "format",     required_argument, NULL, 'f' },
+  { "help",       no_argument,       NULL, 'h' },
+  { "no-colour",  no_argument,       NULL, 'n' },
+  { "players",    required_argument, NULL, 'p' },
+  { "timer",      required_argument, NULL, 't' },
+  { NULL,         0,                 NULL, 0 }
 };
 
 static void usage(void) {
@@ -26,14 +29,16 @@ static void usage(void) {
   "Usage: %s [OPTIONS...]\n"
   "\n"
   "Options:\n"
-  "  -c, --colour       Enable coloured output (default if stdout is a\n"
-  "                     terminal)\n"
-  "  -f, --format=STR   Set the game format as described below\n"
-  "                     (default: llllngtllllontlllnc)\n"
-  "  -h, --help         Display this help\n"
-  "  -n, --no-colour    Disable coloured output\n"
-  "  -p, --players=N    Set number of players (default: 1)\n"
-  "  -t, --timer=N      Set round timer in seconds (default: 30)\n"
+  "  -c, --colour          Enable coloured output (default if stdout is a\n"
+  "                        terminal)\n"
+  "  -d, --dictionary=STR  Set the path to the dictionary file (default:\n"
+  "                        ./dictionary)\n"
+  "  -f, --format=STR      Set the game format as described below (default:\n"
+  "                        llllngtllllontlllnc)\n"
+  "  -h, --help            Display this help\n"
+  "  -n, --no-colour       Disable coloured output\n"
+  "  -p, --players=N       Set number of players (default: 1)\n"
+  "  -t, --timer=N         Set round timer in seconds (default: 30)\n"
   "\n"
   "The game format is described as a series of characters corresponding to\n"
   "game rounds. The letter meanings are:\n"
@@ -55,15 +60,16 @@ void parse_opts(int argc, char **argv) {
 
   opterr = 1;
 
-  while((c = getopt_long(argc, argv, "cf:hnp:t:", opts, NULL)) != -1) {
+  while((c = getopt_long(argc, argv, "cd:f:hnp:t:", opts, NULL)) != -1) {
     switch(c) {
-      case 'c': nocolour = 0;           break;
-      case 'f': format = optarg;        break;
-      case 'h': usage(); exit(0);       break;
-      case 'n': nocolour = 1;           break;
-      case 'p': players = atoi(optarg); break;
-      case 't': timer = atoi(optarg);   break;
-      default:  exit(1);                break;
+      case 'c': nocolour = 0;             break;
+      case 'd': dictionary_path = optarg; break;
+      case 'f': format = optarg;          break;
+      case 'h': usage(); exit(0);         break;
+      case 'n': nocolour = 1;             break;
+      case 'p': players = atoi(optarg);   break;
+      case 't': timer = atoi(optarg);     break;
+      default:  exit(1);                  break;
     }
   }
 

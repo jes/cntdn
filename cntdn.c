@@ -5,9 +5,15 @@
 #include "cntdn.h"
 
 /* print the reason on stderr and terminate the program */
-void die(const char *reason) {
-  fputs(reason, stderr);
+void die(const char *fmt, ...) {
+  va_list args;
+
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
+  va_end(args);
+
   fputc('\n', stderr);
+
   exit(1);
 }
 
@@ -30,6 +36,8 @@ int main(int argc, char **argv) {
 
   parse_opts(argc, argv);
 
+  load_dictionary(dictionary_path);
+
   make_players();
 
   for(p = format; *p; p++) {
@@ -39,7 +47,7 @@ int main(int argc, char **argv) {
     case 'g': guest_chat();                              break;
     case 't': teatime_teaser();                          break;
     case 'o': origin_of_words();                         break;
-    case 'c': conundrum(); show_scores(*(p+1) == 0);     break;
+    case 'c': conundrum();     show_scores(*(p+1) == 0); break;
     default:
       fprintf(stderr, "Unknown round letter '%c', skipping round.\n", *p);
     }

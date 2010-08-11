@@ -100,7 +100,10 @@ void letters_round(void) {
   for(j = 0; j < players; j++) {
     i = player_order[j];
 
-    if(player[i].length <= 0) continue;
+    if(player[i].length <= 0) {
+      player[i].word = NULL;
+      continue;
+    }
 
     printf("%s, what is your %d-letter word? ", player[i].name,
            player[i].length);

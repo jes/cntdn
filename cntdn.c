@@ -22,6 +22,8 @@ char *get_line(void) {
   static char buf[BUFLEN];
   char *p;
 
+  if(!noflush) fflush(stdin);
+
   if(!fgets(buf, BUFLEN, stdin)) die("error: eof on stdin");
 
   if((p = strchr(buf, '\n'))) *p = '\0';

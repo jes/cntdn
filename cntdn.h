@@ -28,6 +28,7 @@ extern char *format;
 extern int nocolour;
 extern char *dictionary_path;
 extern int ignore_invalid;
+extern int noflush;
 
 void parse_opts(int argc, char **argv);
 

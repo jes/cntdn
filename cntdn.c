@@ -22,7 +22,7 @@ char *get_line(void) {
   static char buf[BUFLEN];
   char *p;
 
-  if(!noflush) fflush(stdin);
+  if(!noflush) tcflush(STDIN_FILENO, TCIFLUSH);
 
   if(!fgets(buf, BUFLEN, stdin)) die("error: eof on stdin");
 
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 
   parse_opts(argc, argv);
 
-  load_dictionary(dictionary_path, 9);
+  load_dictionary(dictionary_path, num_letters);
 
   make_players();
 

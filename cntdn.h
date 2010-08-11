@@ -5,6 +5,7 @@
 #ifndef CNTDN_H_INC
 #define CNTDN_H_INC
 
+#include <termios.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,6 +31,7 @@ extern int nocolour;
 extern char *dictionary_path;
 extern int ignore_invalid;
 extern int noflush;
+extern int num_letters;
 
 void parse_opts(int argc, char **argv);
 

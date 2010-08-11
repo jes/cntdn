@@ -4,7 +4,7 @@
 
 #include "cntdn.h"
 
-static char letter[10];
+static char letter[256];
 static int turn;
 
 static sig_atomic_t stop_timer;
@@ -32,7 +32,7 @@ static void get_letter(int n) {
   if(nocolour) printf("| ");
   else printf("%s ", letter_colour);
 
-  for(i = 0; i < 9; i++) {
+  for(i = 0; i < num_letters; i++) {
     printf("%c ", (i <= n ? letter[i] : ' '));
   }
 
@@ -69,7 +69,7 @@ void letters_round(void) {
   printf("It is %s's turn to choose letters.\n", player[turn].name);
 
   /* read letter choices and generate letters */
-  for(i = 0; i < 9; i++) get_letter(i);
+  for(i = 0; i < num_letters; i++) get_letter(i);
 
   /* install signal handler that will cancel the timer */
   stop_timer = 0;
@@ -142,9 +142,9 @@ void letters_round(void) {
   for(k = players - 1; k > j; k--) {
     i = player_order[k];
 
-    if(player[i].length == 9) {/* 9 letters score double */
-      printf("18 points to %s.\n", player[i].name);
-      player[i].score += 18;
+    if(player[i].length == num_letters) {/* 9 letters score double */
+      printf("%d points to %s.\n", num_letters * 2, player[i].name);
+      player[i].score += num_letters * 2;
     } else {
       printf("%d points to %s.\n", player[i].length, player[i].name);
       player[i].score += player[i].length;

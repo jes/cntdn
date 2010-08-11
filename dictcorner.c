@@ -4,7 +4,7 @@
 
 #include "cntdn.h"
 
-static char best_word[10];
+static char best_word[256];
 
 /* Give a Susie Dent monologue on the origin of a word */
 void origin_of_words(void) {

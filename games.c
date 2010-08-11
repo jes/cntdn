@@ -111,7 +111,8 @@ void letters_round(void) {
            player[i].length);
     player[i].word = strdup(get_line());
 
-    if(strlen(player[i].word) != player[i].length) {
+    if(strlen(player[i].word) != player[i].length
+       || !valid_word(i, letter)) {
       free(player[i].word);
 
       /* try again once if they didn't supply a suitable word */
@@ -119,12 +120,8 @@ void letters_round(void) {
            player[i].length);
       player[i].word = strdup(get_line());
 
-      if(strlen(player[i].word) != player[i].length) player[i].length = 0;
-    }
-
-    if(player[i].length > 0) {
-      /* check the word with dictionary corner */
-      if(!valid_word(i, letter)) player[i].length = 0;
+      if(strlen(player[i].word) != player[i].length
+         || !valid_word(i, letter)) player[i].length = 0;
     }
   }
 

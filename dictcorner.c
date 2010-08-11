@@ -24,8 +24,13 @@ int valid_word(int p, const char *letters) {
   if(!can_make_word(player[p].word, letters)) {
     /* TODO: this should be more specific about what letters are missing */
     printf("%sNotSusie%s: Sorry %s, you can't make \"%s\" with those "
-           "letters.\n", pres_colour[SUSIE], colour_off, player[p].name,
+           "letters.", pres_colour[SUSIE], colour_off, player[p].name,
            player[p].word);
+
+    if(!word_in_dictionary(player[p].word))
+      printf(" It isn't in my dictionary, either.");
+
+    printf("\n");
     return 0;
   }
 

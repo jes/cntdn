@@ -55,6 +55,8 @@ static void store_word(const char *word) {
 
 /* Get dictionary corner to give their best word */
 void dict_solve(const char *letters) {
+  int i;
+
   /* TODO: this function should be more intelligent about when it gets a word
      that one of the players got */
 
@@ -62,6 +64,15 @@ void dict_solve(const char *letters) {
 
   solve_letters(letters, store_word);
 
-  printf("%sNotSusie%s: The best word we found was \"%s\".\n",
-         pres_colour[SUSIE], colour_off, best_word);
+  for(i = 0; best_word[i]; i++) {
+    best_word[i] = tolower(best_word[i]);
+  }
+
+  if(!*best_word) {
+    printf("%sNotSusie%s: We couldn't find any words at all.\n",
+           pres_colour[SUSIE], colour_off);
+  } else {
+    printf("%sNotSusie%s: The best word we found was \"%s\".\n",
+           pres_colour[SUSIE], colour_off, best_word);
+  }
 }

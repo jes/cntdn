@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <time.h>
 
 #define BUFLEN 8192

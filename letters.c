@@ -169,12 +169,11 @@ int word_in_dictionary(const char *word) {
     if(!n->child[idx]) return 0;
 
     p++;
+    n = n->child[idx];
 
     /* if that was the last letter and the word can end, the word was in the
        dictionary */
     if(!*p && n->end_word) return 1;
-
-    n = n->child[idx];
   }
 
   return 0;

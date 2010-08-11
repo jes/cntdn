@@ -6,6 +6,7 @@
 
 static char letter[256];
 static int turn;
+static int round = 1;
 
 static sig_atomic_t stop_timer;
 
@@ -64,7 +65,7 @@ void letters_round(void) {
       reveal words
       assign scores
       dictionary corner words */
-  printf(" *** Letters round\n");
+  printf(" Round %d: Letters round\n", round);
 
   printf("It is %s's turn to choose letters.\n", player[turn].name);
 
@@ -156,6 +157,7 @@ void letters_round(void) {
   /* TODO: display dictionary corner's word in blue and white */
 
   /* increment the player whose turn it is to choose numbers/letters */
+  round++;
   turn++;
   if(turn >= players) turn = 0;
 

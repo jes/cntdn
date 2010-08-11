@@ -62,8 +62,9 @@ void show_scores(int endgame) {
 
   for(i = 0; i < players; i++) {
     printf("  %s %s %d points.\n", player[player_order[i]].name,
-           (endgame & (player[player_order[i]].score ==
-                       player[player_order[0]].score) ? "wins with" : "has"),
+           (endgame &
+             (player[player_order[i]].score == player[player_order[0]].score) ?
+               (players == 0 ? "finishes with" : "wins with") : "has"),
            player[player_order[i]].score);
   }
 

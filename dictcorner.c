@@ -23,6 +23,9 @@ int valid_word(const char *word) {
   printf("%sNotSusie%s: \"%s\"! Excellent!\n",
          pres_colour[SUSIE], colour_off, word);
 
+  /* NOTE: if the word isn't in the dictionary, the user should be asked if
+     they want to use it anyway */
+
   return 1;
 }
 

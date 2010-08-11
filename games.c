@@ -78,7 +78,7 @@ void letters_round(void) {
     printf("\r                     ");/* clear the line */
     printf("\r%d second%s left.", i, (i == 1 ? "" : "s"));
     fflush(stdout);
-    sleep(1);
+    if(i > 0) sleep(1);
   }
   printf("\n");
 

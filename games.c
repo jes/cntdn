@@ -12,20 +12,22 @@ static sig_atomic_t stop_timer;
 /* get the nth letter for the current round */
 static void get_letter(int n) {
   char *line;
-  int repeat;
   int i;
 
-  do {
-    repeat = 0;
-
+  while(1) {
     printf("vowel or consonant? [vc] ");
     line = get_line();
 
-    if(tolower(*line) == 'v') letter[n] = get_vowel();
-    else if(tolower(*line) == 'c') letter[n] = get_consonant();
-    else repeat = 1;
+    if(tolower(*line) == 'v') {
+      letter[n] = get_vowel();
+      break;
+    } else if(tolower(*line) == 'c') {
+      letter[n] = get_consonant();
+      break;
+    }
+
     /* TODO: limitations on amounts of vowels and consonants */
-  } while(repeat);
+  }
 
   if(nocolour) printf("| ");
   else printf("%s ", letter_colour);
@@ -122,7 +124,7 @@ void letters_round(void) {
 
     if(player[i].length > 0) {
       /* check the word with dictionary corner */
-      if(!valid_word(player[i].word)) player[i].length = 0;
+      if(!valid_word(i, letter)) player[i].length = 0;
     }
   }
 

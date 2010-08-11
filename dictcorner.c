@@ -16,15 +16,34 @@ void guest_chat(void) {
   printf(" *** Guest tells a story\n");
 }
 
-/* Return 1 if word is valid and 0 otherwise. This functions produces game
-   output */
-int valid_word(const char *word) {
-  /* TODO: this function */
-  printf("%sNotSusie%s: \"%s\"! Excellent!\n",
-         pres_colour[SUSIE], colour_off, word);
+/* Return 1 if player p's word is valid and 0 otherwise. This functions produces
+   game output */
+int valid_word(int p, const char *letters) {
+  char *line;
 
-  /* NOTE: if the word isn't in the dictionary, the user should be asked if
-     they want to use it anyway */
+  if(!can_make_word(player[p].word, letters)) {
+    /* TODO: this should be more specific about what letters are missing */
+    printf("%sNotSusie%s: Sorry %s, you can't make \"%s\" with those "
+           "letters.\n", pres_colour[SUSIE], colour_off, player[p].name,
+           player[p].word);
+    return 0;
+  }
+
+  if(!word_in_dictionary(player[p].word)) {
+    while(1) {
+      printf("%sNotSusie%s: %s, \"%s\" isn't in my dictionary. Do you want to "
+             "use it anyway? [yn] ", pres_colour[SUSIE], colour_off,
+             player[p].name, player[p].word);
+
+      line = get_line();
+
+      if(tolower(*line) == 'y') return 1;
+      else if(tolower(*line) == 'n') return 0;
+    }
+  }
+
+  printf("%sNotSusie%s: \"%s\"! Excellent!\n", pres_colour[SUSIE], colour_off,
+         player[p].word);
 
   return 1;
 }

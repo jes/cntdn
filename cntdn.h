@@ -71,7 +71,7 @@ void conundrum(void);
 /* dictcorner.c */
 void origin_of_words(void);
 void guest_chat(void);
-int valid_word(const char *word);
+int valid_word(int p, const char *letters);
 void dict_solve(const char *letters);
 
 /* letters.c */

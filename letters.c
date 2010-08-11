@@ -156,6 +156,60 @@ void solve_letters(const char *letters, void (*callback)(const char *word)) {
   free(used_letter);
 }
 
+/* Return 1 if the given word is in the dictionary and 0 otherwise */
+int word_in_dictionary(const char *word) {
+  TrieNode *n = dictionary;
+  const char *p = word;
+  int idx;
+
+  while(*p) {
+    /* TODO: Should this give a warning? */
+    if((idx = letter_idx(*p)) == -1) return 0;
+
+    if(!n->child[idx]) return 0;
+
+    p++;
+
+    /* if that was the last letter and the word can end, the word was in the
+       dictionary */
+    if(!*p && n->end_word) return 1;
+
+    n = n->child[idx];
+  }
+
+  return 0;
+}
+
+/* Return 1 if the given word can be made with the given letters */
+int can_make_word(const char *word, const char *letters) {
+  int avail[26] = { 0 };
+  int i, idx;
+  const char *p;
+
+  /* add one availability for each letter */
+  for(p = letters; *p; p++) {
+    if((idx = letter_idx(*p)) == -1) /* TODO: does this need to be fatal? */
+      die("error: letters array '%s' contains non-letter '%c'.", letters, *p);
+
+    avail[idx]++;
+  }
+
+  /* remove one availability for each letter of the word */
+  for(p = word; *p; p++) {
+    if((idx = letter_idx(*p)) == -1) return 0;
+
+    avail[idx]--;
+  }
+
+  /* if any availabilities are negative, it means more of a letter was used than
+     was available */
+  for(i = 0; i < 26; i++) {
+    if(avail[i] < 0) return 0;
+  }
+
+  return 1;
+}
+
 #ifndef CNTDN
 /* What follows from here is only compiled if we're not part of the main cntdn
    program */

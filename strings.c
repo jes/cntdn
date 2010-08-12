@@ -35,17 +35,22 @@ static char consonant[sizeof(cons_string) / sizeof(*cons_string)];
 static int cons_pos = sizeof(consonant) / sizeof(*consonant);
 
 /* ANSI colours */
-char *colour_off = "\e[0m";
-char *letter_colour = "\e[1;37;44m";
+const char *colour_off = "\e[0m";
+const char *letter_colour = "\e[1;37;44m";
 
 /* player colours */
-char *colour[] = {
+const char *colour[] = {
   "\e[31m", "\e[32m", "\e[33m", "\e[34m", "\e[35m", "\e[36m"
 };
 const int num_colours = sizeof(colour) / sizeof(*colour);
 
+/* presenter names */
+static const char *pres_name[] = {
+  "Jeff", "Susie", "Rachel", "MYSTERY GUEST"
+};
+
 /* presenter colours */
-char *pres_colour[] = {
+static const char *pres_colour[] = {
   /* Jeff   */ "\e[1;31m", /* Susie */ "\e[1;32m",
   /* Rachel */ "\e[1;35m", /* Guest */ "\e[1;34m"
 };
@@ -92,4 +97,26 @@ char get_vowel(void) {
 char get_consonant(void) {
   if(cons_pos >= num_consonants) init_consonants();
   return consonant[cons_pos++];
+}
+
+/* replace colour strings with "" */
+void colours_off(void) {
+  int i;
+
+  for(i = 0; i < num_colours; i++) colour[i] = "";
+  for(i = 0; i <= GUEST; i++) pres_colour[i] = "";
+  letter_colour = "";
+  colour_off = "";
+}
+
+
+/* Speaks a line of text from the given presenter */
+void speak(int presenter, const char *fmt, ...) {
+  va_list args;
+
+  printf("%s%s%s: ", pres_colour[presenter], pres_name[presenter], colour_off);
+
+  va_start(args, fmt);
+  vprintf(fmt, args);
+  va_end(args);
 }

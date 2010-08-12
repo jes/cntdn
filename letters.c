@@ -18,7 +18,7 @@ static int ignore_invalid = 0;
 static int minletters = 6;
 #endif
 
-static int num_letters;
+static int solve_num_letters;
 static char *used_letter;
 
 /* return a number 0..25 to be used as a trie child index, or -1 if it's not a
@@ -113,9 +113,9 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 
   if(node->end_word) callback(answer);
 
-  if(level == num_letters) return;
+  if(level == solve_num_letters) return;
 
-  for(i = 0; i < num_letters; i++) {
+  for(i = 0; i < solve_num_letters; i++) {
     if(used_letter[i]) continue;
     if(done[letter_idx(letters[i])]) continue;
 
@@ -143,12 +143,12 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 void solve_letters(const char *letters, void (*callback)(const char *word)) {
   char *word;
 
-  num_letters = strlen(letters);
-  used_letter = malloc(num_letters);
-  memset(used_letter, 0, num_letters);
+  solve_num_letters = strlen(letters);
+  used_letter = malloc(solve_num_letters);
+  memset(used_letter, 0, solve_num_letters);
 
-  word = malloc(num_letters + 1);
-  memset(word, 0, num_letters + 1);
+  word = malloc(solve_num_letters + 1);
+  memset(word, 0, solve_num_letters + 1);
 
   recurse_solve(letters, dictionary, word, 0, callback);
 

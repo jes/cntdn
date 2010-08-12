@@ -23,9 +23,8 @@ int valid_word(int p, const char *letters) {
 
   if(!can_make_word(player[p].word, letters)) {
     /* TODO: this should be more specific about what letters are missing */
-    printf("%sNotSusie%s: Sorry %s, you can't make \"%s\" with those "
-           "letters.", pres_colour[SUSIE], colour_off, player[p].name,
-           player[p].word);
+    speak(SUSIE, "Sorry %s, you can't make \"%s\" with those letters.",
+          player[p].name, player[p].word);
 
     if(!word_in_dictionary(player[p].word))
       printf(" It isn't in my dictionary, either.");
@@ -36,9 +35,8 @@ int valid_word(int p, const char *letters) {
 
   if(!word_in_dictionary(player[p].word)) {
     while(1) {
-      printf("%sNotSusie%s: %s, \"%s\" isn't in my dictionary. Do you want to "
-             "use it anyway? [yn] ", pres_colour[SUSIE], colour_off,
-             player[p].name, player[p].word);
+      speak(SUSIE, "%s, \"%s\" isn't in my dictionary. Do you want to use it "
+            "anyway? [yn] ", player[p].name, player[p].word);
 
       line = get_line();
 
@@ -47,8 +45,8 @@ int valid_word(int p, const char *letters) {
     }
   }
 
-  printf("%sNotSusie%s: \"%s\"! Excellent!\n", pres_colour[SUSIE], colour_off,
-         player[p].word);
+  /* TODO: decide whether the word is good or not and react accordingly */
+  speak(SUSIE, "\"%s\"! Excellent!\n", player[p].word);
 
   return 1;
 }
@@ -74,10 +72,8 @@ void dict_solve(const char *letters) {
   }
 
   if(!*best_word) {
-    printf("%sNotSusie%s: We couldn't find any words at all.\n",
-           pres_colour[SUSIE], colour_off);
+    speak(SUSIE, "We couldn't find any words at all.\n");
   } else {
-    printf("%sNotSusie%s: The best word we found was \"%s\".\n",
-           pres_colour[SUSIE], colour_off, best_word);
+    speak(SUSIE, "The best word we found was \"%s\".\n", best_word);
   }
 }

@@ -62,7 +62,6 @@ static void usage(void) {
 /* parse command line options. this function exit()'s if appropriate */
 void parse_opts(int argc, char **argv) {
   int c;
-  int i;
 
   program_name = argv[0];
 
@@ -86,12 +85,8 @@ void parse_opts(int argc, char **argv) {
     }
   }
 
-  if(nocolour) {/* set escape codes to be empty */
-    for(i = 0; i < num_colours; i++) colour[i] = "";
-    for(i = 0; i <= GUEST; i++) pres_colour[i] = "";
-    letter_colour = "";
-    colour_off = "";
-  }
+  /* set escape codes to be empty */
+  if(nocolour) colours_off();
 
   /* validate options */
   if(timer < 0)

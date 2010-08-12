@@ -55,15 +55,16 @@ void show_scores(int endgame);
 #define RACHEL 2
 #define GUEST  3
 
-extern char *letter_colour;
-extern char *colour_off;
-extern char *colour[];
+extern const char *letter_colour;
+extern const char *colour_off;
+extern const char *colour[];
 extern const int num_colours;
-extern char *pres_colour[];
 
 const char *get_name(void);
 char get_vowel(void);
 char get_consonant(void);
+void colours_off(void);
+void speak(int presenter, const char *fmt, ...);
 
 /* games.c */
 void letters_round(void);

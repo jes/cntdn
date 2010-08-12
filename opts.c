@@ -47,7 +47,7 @@ static void usage(void) {
   "  -l, --letters=N       Set the number of letters in the letters game\n"
   "  -n, --no-colour       Disable coloured output\n"
   "  -p, --players=N       Set number of players (default: 1)\n"
-  "  -s, --no-flush        Don't flush stdin before reading from it\n"
+  "  -s, --no-flush        Don't discard stdin text before reading it\n"
   "  -t, --timer=N         Set round timer in seconds (default: 30)\n"
   "\n"
   "The game format is described as a series of characters corresponding to\n"

@@ -109,14 +109,33 @@ void colours_off(void) {
   colour_off = "";
 }
 
-
 /* Speaks a line of text from the given presenter */
 void speak(int presenter, const char *fmt, ...) {
-  va_list args;
+  va_list args, args2;
+  int len;
+  char *s, *p;
 
   printf("%s%s%s: ", pres_colour[presenter], pres_name[presenter], colour_off);
 
   va_start(args, fmt);
-  vprintf(fmt, args);
+
+  /* find the length required to store the text */
+  va_copy(args2, args);
+  len = vsnprintf(NULL, 0, fmt, args2);
+  va_end(args2);
+
+  /* allocate the string and write the text */
+  s = malloc(len + 1);
+  vsnprintf(s, len + 1, fmt, args);
+
   va_end(args);
+
+  /* slowly output the letters */
+  for(p = s; *p; p++) {
+    putchar(*p);
+    fflush(stdout);
+    usleep(60000);
+  }
+
+  free(s);
 }

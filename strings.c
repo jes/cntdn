@@ -1,7 +1,5 @@
 /* String lists for cntdn
 
-   TODO: Most of these need to only return a given index once
-
    James Stanley 2010 */
 
 #include "cntdn.h"
@@ -113,9 +111,33 @@ void colours_off(void) {
 void speak(int presenter, const char *fmt, ...) {
   va_list args, args2;
   int len;
-  char *s, *p;
+  char *s;
 
   printf("%s%s%s: ", pres_colour[presenter], pres_name[presenter], colour_off);
+
+  va_start(args, fmt);
+
+  /* find the length required to store the text */
+  va_copy(args2, args);
+  len = vsnprintf(NULL, 0, fmt, args2);
+  va_end(args2);
+
+  /* allocate the string and write the text */
+  s = malloc(len + 1);
+  vsnprintf(s, len + 1, fmt, args);
+
+  va_end(args);
+
+  slow_printf("%s", s);
+
+  free(s);
+}
+
+/* printf, but slowly */
+void slow_printf(const char *fmt, ...) {
+  va_list args, args2;
+  char *s, *p;
+  int len;
 
   va_start(args, fmt);
 
@@ -138,4 +160,6 @@ void speak(int presenter, const char *fmt, ...) {
   }
 
   free(s);
+
+  return;
 }

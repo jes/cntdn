@@ -65,6 +65,7 @@ char get_vowel(void);
 char get_consonant(void);
 void colours_off(void);
 void speak(int presenter, const char *fmt, ...);
+void slow_printf(const char *fmt, ...);
 
 /* games.c */
 void letters_round(void);

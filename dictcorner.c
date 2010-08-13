@@ -27,7 +27,7 @@ int valid_word(int p, const char *letters) {
           player[p].name, player[p].word);
 
     if(!word_in_dictionary(player[p].word))
-      printf(" It isn't in my dictionary, either.");
+      slow_printf(" It isn't in my dictionary, either.");
 
     printf("\n");
     return 0;

@@ -130,11 +130,11 @@ void speak(int presenter, const char *fmt, ...) {
 
   va_end(args);
 
-  /* slowly output the letters */
+  /* slowly output the words */
   for(p = s; *p; p++) {
     putchar(*p);
     fflush(stdout);
-    usleep(60000);
+    if(*p == ' ') usleep(120000);
   }
 
   free(s);

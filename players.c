@@ -11,7 +11,9 @@ static void read_name(int n) {
   char *line;
   int col_num = n % num_colours;
 
-  printf("Name for player %d: %s", n + 1, colour[col_num]);
+  if(players == 1) printf("Name for player: %s", colour[col_num]);
+  else printf("Name for player %d: %s", n + 1, colour[col_num]);
+
   line = get_line();
   printf("%s", colour_off);
 

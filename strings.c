@@ -27,10 +27,23 @@ static const int num_consonants =
    vowel[1], vowel[2], etc. */
 static char vowel[sizeof(vowel_string) / sizeof(*vowel_string)];
 static int vowel_pos = sizeof(vowel) / sizeof(*vowel);
-
-/* as for vowel[] above, but for consonants */
 static char consonant[sizeof(cons_string) / sizeof(*cons_string)];
 static int cons_pos = sizeof(consonant) / sizeof(*consonant);
+
+/* number choices for the numbers game */
+static const int large_nums[] = { 25, 50, 75, 100 };
+static const int num_large = sizeof(large_nums) / sizeof(*large_nums);
+
+static const int small_nums[] = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5,
+                                  6, 6, 7, 7, 8, 8, 9, 9, 10, 10 };
+static const int num_small = sizeof(small_nums) / sizeof(*small_nums);
+
+/* a shuffled array of large numbers, re-initialised whenever it becomes empty
+   or by init_numbers() when a numbers game starts */
+static int large[sizeof(large_nums) / sizeof(*large_nums)];
+static int large_pos = sizeof(large) / sizeof(*large);
+static int small[sizeof(small_nums) / sizeof(*small_nums)];
+static int small_pos = sizeof(small) / sizeof(*small);
 
 /* ANSI colours */
 const char *colour_off = "\e[0m";
@@ -54,9 +67,22 @@ static const char *pres_colour[] = {
 };
 
 /* shuffles character array 'a' of length 'len' */
-static void shuffle(char *a, int len) {
+static void char_shuffle(char *a, int len) {
   int i, j;
   char c;
+
+  for(i = len-1; i >= 0; i--) {
+    j = rand() % (i + 1);
+    c = a[i];
+    a[i] = a[j];
+    a[j] = c;
+  }
+}
+
+/* shuffles integer array 'a' of length 'len' */
+static void int_shuffle(int *a, int len) {
+  int i, j;
+  int c;
 
   for(i = len-1; i >= 0; i--) {
     j = rand() % (i + 1);
@@ -69,15 +95,25 @@ static void shuffle(char *a, int len) {
 /* initialise the shuffled vowel array */
 static void init_vowels(void) {
   strcpy(vowel, vowel_string);
-  shuffle(vowel, num_vowels);
+  char_shuffle(vowel, num_vowels);
   vowel_pos = 0;
 }
 
 /* initialise the shuffled consonant array */
 static void init_consonants(void) {
   strcpy(consonant, cons_string);
-  shuffle(consonant, num_consonants);
+  char_shuffle(consonant, num_consonants);
   cons_pos = 0;
+}
+
+/* initialise the shuffled number arrays */
+void init_numbers(void) {
+  memcpy(large, large_nums, sizeof(large));
+  memcpy(small, small_nums, sizeof(small));
+  int_shuffle(large, num_large);
+  int_shuffle(small, num_small);
+  large_pos = 0;
+  small_pos = 0;
 }
 
 /* return a random player name */
@@ -95,6 +131,18 @@ char get_vowel(void) {
 char get_consonant(void) {
   if(cons_pos >= num_consonants) init_consonants();
   return consonant[cons_pos++];
+}
+
+/* return a small number */
+int get_small(void) {
+  if(small_pos >= num_small) init_numbers();
+  return small[small_pos++];
+}
+
+/* return a large number */
+int get_large(void) {
+  if(large_pos >= num_large) init_numbers();
+  return large[large_pos++];
 }
 
 /* replace colour strings with "" */

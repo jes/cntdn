@@ -5,7 +5,6 @@
 #include "cntdn.h"
 
 static char letter[256];
-static int turn;
 static int round = 1;
 
 static sig_atomic_t stop_timer;
@@ -55,6 +54,7 @@ static void cancel_timer(int sig) {
 
 /* play one letters round */
 void letters_round(void) {
+  static int turn = 0;
   int i, j, k;
   int *player_order;
 
@@ -156,7 +156,7 @@ void letters_round(void) {
 
   /* TODO: display dictionary corner's word in blue and white */
 
-  /* increment the player whose turn it is to choose numbers/letters */
+  /* increment the player whose turn it is to choose letters */
   round++;
   turn++;
   if(turn >= players) turn = 0;
@@ -168,7 +168,51 @@ void letters_round(void) {
 
 /* play one numbers round */
 void numbers_round(void) {
-  printf(" *** Numbers round\n");
+  int number[6];
+  int num_large;
+  int i;
+  static int turn = 0;
+
+  /* stages:
+      pick numbers
+      30 second timer (let Rachel think during this time?)
+      reveal answers
+      reveal methods
+      assign scores
+      Rachel's solution */
+  printf(" Round %d: Numbers round\n", round);
+
+  printf("It is %s's turn to choose numbers.\n", player[turn].name);
+
+  /* choose numbers */
+  init_numbers();
+  do {
+    printf("%s, how many large numbers? [0 to 4] ", player[turn].name);
+    num_large = atoi(get_line());
+  } while(num_large < 0 || num_large > 4);
+
+  /* generate numbers */
+  for(i = 0; i < num_large; i++) {
+    number[i] = get_large();
+  }
+  for(; i < 6; i++) {
+    number[i] = get_small();
+  }
+
+  /* display numbers */
+  /* TODO: start at right and work way to left like on the program */
+  if(nocolour) printf("| ");
+  else printf("%s ", letter_colour);
+  for(i = 0; i < 6; i++) {
+    printf("%d ", number[i]);
+  }
+  if(nocolour) printf("|\n");
+  else printf("%s\n", colour_off);
+
+  /* increment the player whose turn it is to choose numbers */
+  round++;
+  turn++;
+  if(turn >= players) turn = 0;
 }
 
 /* do a teatime teaser */

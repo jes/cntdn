@@ -61,8 +61,11 @@ extern const char *colour[];
 extern const int num_colours;
 
 const char *get_name(void);
+void init_numbers(void);
 char get_vowel(void);
 char get_consonant(void);
+int get_small(void);
+int get_large(void);
 void colours_off(void);
 void speak(int presenter, const char *fmt, ...);
 void slow_printf(const char *fmt, ...);

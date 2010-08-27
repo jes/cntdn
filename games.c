@@ -7,6 +7,9 @@
 static char letter[256];
 static int round = 1;
 
+int number[6];
+int target;
+
 static sig_atomic_t stop_timer;
 
 /* signal handler to cancel the countdown timer */
@@ -175,7 +178,6 @@ void letters_round(void) {
 
 /* play one numbers round */
 void numbers_round(void) {
-  int number[6];
   int num_large;
   int i;
   static int turn = 0;

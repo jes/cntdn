@@ -71,6 +71,9 @@ void speak(int presenter, const char *fmt, ...);
 void slow_printf(const char *fmt, ...);
 
 /* games.c */
+extern int number[6];
+extern int target;
+
 void letters_round(void);
 void numbers_round(void);
 void teatime_teaser(void);

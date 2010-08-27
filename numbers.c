@@ -2,8 +2,11 @@
 
    James Stanley 2010 */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "numbers.h"
+
+#ifdef CNTDN
+#include "cntdn.h"
+#endif
 
 #define ADD 0
 #define SUB 1
@@ -13,10 +16,12 @@
 int sp = 0;
 int stack[32];
 
+#ifndef CNTDN
 int number[6];
-int numbers;
 int target;
-int level;
+#endif
+
+int numbers;
 
 /* apply operation o to n1 and n2 and return the result
    fails silently on division by zero or invalid operator */
@@ -55,13 +60,14 @@ void print_vals(void) {
   }
 }
 
-/* recursively solve the game, returning 1 if solved and 0 otherwise
-   TODO: BFS to get simplest solutions */
-int solve(void) {
+/* recursively solve the game, up to "levels" levels of recursion */
+static int recurse_solve(int levels) {
   int i, j, o;
   int k;
   int ni, nj;
   int result;
+
+  if(levels == 0) return 0;
 
   for(i = 0; i < numbers - 1; i++) {
     ni = number[i];
@@ -86,7 +92,7 @@ int solve(void) {
 
         /* if the result is the target, we short-circuit and push values,
            otherwise solve() is called, and if it returns 1 we push values */
-        if(result == target || solve()) {
+        if(result == target || recurse_solve(levels - 1)) {
           push_vals(ni, o, nj, result);
           return 1;
         }
@@ -108,6 +114,24 @@ int solve(void) {
 
   return 0;
 }
+
+/* solve the game, returning 1 if solved and 0 otherwise */
+int solve(void) {
+  int i;
+
+  numbers = 6;
+
+  /* iteratively deepen the DFS */
+  for(i = 1; i <= 6; i++) {
+    if(recurse_solve(i)) return 1;
+  }
+
+  return 0;
+}
+
+#ifndef CNTDN
+/* What follows is only compiled in if this is a separate numbers-solving
+   program */
 
 int main(int argc, char **argv) {
   int i;
@@ -135,3 +159,4 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+#endif

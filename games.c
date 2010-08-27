@@ -9,6 +9,31 @@ static int round = 1;
 
 static sig_atomic_t stop_timer;
 
+/* signal handler to cancel the countdown timer */
+static void cancel_timer(int sig) {
+  stop_timer = 1;
+}
+
+static void run_timer(void) {
+  int i;
+
+  /* install signal handler that will cancel the timer */
+  stop_timer = 0;
+  signal(SIGINT, cancel_timer);
+
+  /* wait for players to think */
+  for(i = timer; i >= 0 && !stop_timer; i--) {
+    printf("\r                     ");/* clear the line */
+    printf("\r%d second%s left.", i, (i == 1 ? "" : "s"));
+    fflush(stdout);
+    if(i > 0) sleep(1);
+  }
+  printf("\n");
+
+  /* re-instate default SIGINT handler */
+  signal(SIGINT, SIG_DFL);
+}
+
 /* get the nth letter for the current round */
 static void get_letter(int n) {
   char *line;
@@ -47,11 +72,6 @@ static int length_cmp(const void *one, const void *two) {
   return player[*a].length - player[*b].length;
 }
 
-/* signal handler to cancel the countdown timer */
-static void cancel_timer(int sig) {
-  stop_timer = 1;
-}
-
 /* play one letters round */
 void letters_round(void) {
   static int turn = 0;
@@ -72,21 +92,8 @@ void letters_round(void) {
   /* read letter choices and generate letters */
   for(i = 0; i < num_letters; i++) get_letter(i);
 
-  /* install signal handler that will cancel the timer */
-  stop_timer = 0;
-  signal(SIGINT, cancel_timer);
-
-  /* wait for players to think */
-  for(i = timer; i >= 0 && !stop_timer; i--) {
-    printf("\r                     ");/* clear the line */
-    printf("\r%d second%s left.", i, (i == 1 ? "" : "s"));
-    fflush(stdout);
-    if(i > 0) sleep(1);
-  }
-  printf("\n");
-
-  /* re-instate default SIGINT handler */
-  signal(SIGINT, SIG_DFL);
+  /* let people think */
+  run_timer();
 
   /* ask each player for their word length */
   for(i = 0; i < players; i++) {
@@ -208,6 +215,9 @@ void numbers_round(void) {
   }
   if(nocolour) printf("|\n");
   else printf("%s\n", colour_off);
+
+  /* let people think */
+  run_timer();
 
   /* increment the player whose turn it is to choose numbers */
   round++;

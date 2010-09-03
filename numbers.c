@@ -4,10 +4,6 @@
 
 #include "numbers.h"
 
-#ifdef CNTDN
-#include "cntdn.h"
-#endif
-
 #define ADD 0
 #define SUB 1
 #define MUL 2
@@ -15,11 +11,6 @@
 
 int sp = 0;
 int stack[32];
-
-#ifndef CNTDN
-int number[6];
-int target;
-#endif
 
 int numbers;
 
@@ -128,35 +119,3 @@ int solve(void) {
 
   return 0;
 }
-
-#ifndef CNTDN
-/* What follows is only compiled in if this is a separate numbers-solving
-   program */
-
-int main(int argc, char **argv) {
-  int i;
-
-  /* not enough arguments */
-  if(argc != 8) {
-    fprintf(stderr,
-    "Usage: %s target n1 n2 n3 n4 n5 n6\n"
-    "Where n1..6 are the 6 numbers and target is the target number.\n",
-    argv[0]);
-
-    return 1;
-  }
-
-  /* read the arguments */
-  target = atoi(argv[1]);
-  for(i = 0; i < 6; i++) {
-    number[i] = atoi(argv[i + 2]);
-  }
-  numbers = 6;
-
-  /* solve these numbers */
-  if(solve() == 1) print_vals();
-  else fprintf(stderr, "No solution.\n");
-
-  return 0;
-}
-#endif

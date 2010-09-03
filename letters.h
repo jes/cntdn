@@ -22,14 +22,12 @@ typedef struct TrieNode {
 
 extern TrieNode *dictionary;
 
+extern int ignore_invalid;
+extern int minletters;
+
 void load_dictionary(const char *path, int maxlen);
 void solve_letters(const char *letters, void (*callback)(const char *word));
 int word_in_dictionary(const char *word);
 int can_make_word(const char *word, const char *letters);
-
-#ifndef CNTDN
-/* the following is only if we're not part of the cntdn program */
-void die(const char *fmt, ...);
-#endif
 
 #endif

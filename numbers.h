@@ -8,4 +8,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+extern int number[6];
+extern int target;
+
+extern int numbers;
+
 #endif

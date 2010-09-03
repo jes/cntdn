@@ -10,6 +10,7 @@ Player *player;
 static void read_name(int n) {
   char *line;
   int col_num = n % num_colours;
+  size_t len;
 
   if(players == 1) printf("Name for player: %s", colour[col_num]);
   else printf("Name for player %d: %s", n + 1, colour[col_num]);
@@ -21,10 +22,10 @@ static void read_name(int n) {
   else player[n].raw_name = strdup(line);
 
   /* add colour to the printing name */
-  player[n].name = malloc(strlen(colour[col_num]) +
-                          strlen(player[n].raw_name) +
-                          strlen(colour_off) + 1);
-  sprintf(player[n].name, "%s%s%s", colour[col_num],
+  len = strlen(colour[col_num]) + strlen(player[n].raw_name)
+        + strlen(colour_off) + 1;
+  player[n].name = malloc(len);
+  snprintf(player[n].name, len, "%s%s%s", colour[col_num],
           player[n].raw_name, colour_off);
 
   /* if a name wasn't supplied, inform the player of his name */

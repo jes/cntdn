@@ -94,14 +94,14 @@ static void int_shuffle(int *a, int len) {
 
 /* initialise the shuffled vowel array */
 static void init_vowels(void) {
-  strcpy(vowel, vowel_string);
+  memcpy(vowel, vowel_string, num_vowels);
   char_shuffle(vowel, num_vowels);
   vowel_pos = 0;
 }
 
 /* initialise the shuffled consonant array */
 static void init_consonants(void) {
-  strcpy(consonant, cons_string);
+  memcpy(consonant, cons_string, num_consonants);
   char_shuffle(consonant, num_consonants);
   cons_pos = 0;
 }

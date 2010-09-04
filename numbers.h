@@ -18,4 +18,7 @@ extern int target;
 
 extern int numbers;
 
+int solve(void);
+void print_vals(void);
+
 #endif

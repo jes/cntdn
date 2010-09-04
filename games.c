@@ -179,7 +179,7 @@ void letters_round(void) {
 /* play one numbers round */
 void numbers_round(void) {
   int num_large;
-  int i;
+  int i, j;
   static int turn = 0;
 
   /* stages:
@@ -209,14 +209,32 @@ void numbers_round(void) {
   }
 
   /* display numbers */
-  /* TODO: start at right and work way to left like on the program */
-  if(nocolour) printf("| ");
-  else printf("%s ", letter_colour);
-  for(i = 0; i < 6; i++) {
-    printf("%d ", number[i]);
+  for(j = 6; j >= 0; j--) {
+    printf("      \r");
+
+    if(nocolour) printf("| ");
+    else printf("%s ", letter_colour);
+
+    for(i = 0; i < j; i++) {
+      if(number[i] > 9) printf(" ");
+      if(number[i] > 99) printf(" ");
+      printf("  ");
+    }
+    for(i = j; i < 6; i++) {
+      printf("%d ", number[i]);
+    }
+
+    if(nocolour) printf("|");
+    else printf("%s", colour_off);
+    fflush(stdout);
+
+    sleep(1);
   }
-  if(nocolour) printf("|\n");
-  else printf("%s\n", colour_off);
+  putchar('\n');
+
+  /* generate a target */
+  target = 100 + (rand() % 900);
+  printf("target = %d;\n", target);
 
   /* let people think */
   run_timer();

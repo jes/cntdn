@@ -29,5 +29,6 @@ void load_dictionary(const char *path, int maxlen);
 void solve_letters(const char *letters, void (*callback)(const char *word));
 int word_in_dictionary(const char *word);
 int can_make_word(const char *word, const char *letters);
+void die(const char *fmt, ...);
 
 #endif

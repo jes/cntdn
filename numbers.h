@@ -8,6 +8,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct Number {
+  int number;
+  struct Number *next;
+} Number;
+
 extern int number[6];
 extern int target;
 

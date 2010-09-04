@@ -48,7 +48,7 @@ void push_vals(int n1, int o, int n2, int r) {
 
 /* prints the operands/operators stored on the stack */
 void print_vals(void) {
-  static char opname[4] = { '+', '-', '-', '*', '/', '/' };
+  static char opname[6] = { '+', '-', '-', '*', '/', '/' };
   int n1, o, n2, r;
 
   while(sp) {

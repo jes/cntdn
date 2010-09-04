@@ -4,10 +4,12 @@
 
 #include "numbers.h"
 
-#define ADD 0
-#define SUB 1
-#define MUL 2
-#define DIV 3
+#define ADD  0
+#define SUB1 1
+#define SUB2 2
+#define MUL  3
+#define DIV1 4
+#define DIV2 5
 
 int sp = 0;
 int stack[32];
@@ -18,10 +20,12 @@ int numbers;
    fails silently on division by zero or invalid operator */
 int op(int o, int n1, int n2) {
   switch(o) {
-  case ADD: return n1 + n2;
-  case SUB: return n1 - n2;
-  case MUL: return n1 * n2;
-  case DIV: return n1 / n2;
+  case ADD : return n1 + n2;
+  case SUB1: return n1 - n2;
+  case SUB2: return n2 - n1;
+  case MUL : return n1 * n2;
+  case DIV1: return n1 / n2;
+  case DIV2: return n2 / n1;
   }
 
   return 0;
@@ -30,21 +34,27 @@ int op(int o, int n1, int n2) {
 /* push the given values on to the output stack
    to output in form "n1 o n2 = r" */
 void push_vals(int n1, int o, int n2, int r) {
-  stack[sp++] = n1;
-  stack[sp++] = o;
-  stack[sp++] = n2;
+  if(o == SUB2 || o == DIV2) {
+    stack[sp++] = n2;
+    stack[sp++] = o;
+    stack[sp++] = n1;
+  } else {
+    stack[sp++] = n1;
+    stack[sp++] = o;
+    stack[sp++] = n2;
+  }
   stack[sp++] = r;
 }
 
 /* prints the operands/operators stored on the stack */
 void print_vals(void) {
-  static char opname[4] = { '+', '-', '*', '/' };
+  static char opname[4] = { '+', '-', '-', '*', '/', '/' };
   int n1, o, n2, r;
 
   while(sp) {
-    r = stack[--sp];
+    r  = stack[--sp];
     n2 = stack[--sp];
-    o = stack[--sp];
+    o  = stack[--sp];
     n1 = stack[--sp];
 
     printf("%d %c %d = %d\n", n1, opname[o], n2, r);
@@ -72,8 +82,9 @@ static int recurse_solve(int levels) {
       /* move everything after position j along to fill the gap */
       for(k = j; k < numbers; k++) number[k] = number[k + 1];
 
-      for(o = 0; o < 4; o++) {
-        if((o == DIV) && (nj == 0 || ni % nj != 0)) continue;
+      for(o = 0; o < 6; o++) {
+        if((o == DIV1) && (nj == 0 || ni % nj != 0)) continue;
+        if((o == DIV2) && (ni == 0 || nj % ni != 0)) continue;
 
         /* store (ni ? nj) at position i
            we have to store in result as well so that when we output the

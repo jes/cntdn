@@ -92,6 +92,9 @@ static int recurse_solve(int levels) {
            in number[i] */
         number[i] = result = op(o, ni, nj);
 
+        /* don't have negative values at any point */
+        if(result < 0) continue;
+
         /* if the result is the target, we short-circuit and push values,
            otherwise solve() is called, and if it returns 1 we push values */
         if(result == target || recurse_solve(levels - 1)) {

@@ -55,6 +55,7 @@ void show_scores(int endgame);
 #define RACHEL 2
 #define GUEST  3
 
+extern const char *number_colour;
 extern const char *letter_colour;
 extern const char *colour_off;
 extern const char *colour[];

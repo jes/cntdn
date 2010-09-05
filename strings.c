@@ -48,6 +48,7 @@ static int small_pos = sizeof(small) / sizeof(*small);
 /* ANSI colours */
 const char *colour_off = "\e[0m";
 const char *letter_colour = "\e[1;37;44m";
+const char *number_colour = "\e[1;41m";
 
 /* player colours */
 const char *colour[] = {
@@ -204,7 +205,8 @@ void slow_printf(const char *fmt, ...) {
   for(p = s; *p; p++) {
     putchar(*p);
     fflush(stdout);
-    if(*p == ' ') usleep(120000);
+    if(*p == ' ') usleep(150000);
+    if(*p == '\n') usleep(500000);
   }
 
   free(s);

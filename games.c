@@ -208,6 +208,8 @@ void numbers_round(void) {
     number[i] = get_small();
   }
 
+  speak(RACHEL, "Let's have a look at the numbers.\n");
+
   /* display numbers */
   for(j = 6; j >= 0; j--) {
     printf("      \r");
@@ -228,13 +230,31 @@ void numbers_round(void) {
     else printf("%s", colour_off);
     fflush(stdout);
 
-    sleep(1);
+    usleep(500000);
   }
   putchar('\n');
 
+  speak(RACHEL, "And the target number is...\n");
   /* generate a target */
+  for(i = 0; i < 20; i++) {
+    printf("        \r");
+    if(!nocolour) printf("%s", number_colour);
+
+    printf(" %d ", 100 + (rand() % 900));
+
+    if(!nocolour) printf("%s", colour_off);
+    fflush(stdout);
+
+    usleep(100000);
+  }
   target = 100 + (rand() % 900);
-  printf("target = %d;\n", target);
+  printf("        \r");
+  if(!nocolour) printf("%s", number_colour);
+
+  printf(" %d ", target);
+
+  if(!nocolour) printf("%s", colour_off);
+  printf("\n");
 
   /* let people think */
   run_timer();

@@ -8,10 +8,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct Number {
+  struct Number *next, *prev;
+  int val;
+} Number;
+
 extern int number[6];
 extern int target;
-
-extern int numbers;
 
 int solve(void);
 void print_vals(void);

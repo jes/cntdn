@@ -26,7 +26,6 @@ int main(int argc, char **argv) {
   for(i = 0; i < 6; i++) {
     number[i] = atoi(argv[i + 2]);
   }
-  numbers = 6;
 
   /* solve these numbers */
   if(solve() == 1) print_vals();

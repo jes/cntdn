@@ -11,8 +11,8 @@
 #define DIV1 4
 #define DIV2 5
 
-int sp = 0;
-int stack[32];
+static int sp = 0;
+static int stack[32];
 
 int numbers;
 
@@ -87,15 +87,14 @@ static int recurse_solve(int levels) {
       for(o = 0; o < 6; o++) {
         if((o == DIV1) && (nj == 0 || ni % nj != 0)) continue;
         if((o == DIV2) && (ni == 0 || nj % ni != 0)) continue;
+        if((o == SUB1) && (j > i)) continue;
+        if((o == SUB2) && (i > j)) continue;
 
         /* store (ni ? nj) at position i
            we have to store in result as well so that when we output the
            answer the shortcut stack unwinding could have the wrong value
            in number[i] */
         number[i] = result = op(o, ni, nj);
-
-        /* don't have negative values at any point */
-        if(result < 0) continue;
 
         /* if the result is the target, we short-circuit and push values,
            otherwise solve() is called, and if it returns 1 we push values */

@@ -87,8 +87,8 @@ static int recurse_solve(int levels) {
       for(o = 0; o < 6; o++) {
         if((o == DIV1) && (nj == 0 || ni % nj != 0)) continue;
         if((o == DIV2) && (ni == 0 || nj % ni != 0)) continue;
-        if((o == SUB1) && (i > j)) continue;
-        if((o == SUB2) && (j > i)) continue;
+        if((o == SUB1) && (nj > ni)) continue;
+        if((o == SUB2) && (ni > nj)) continue;
 
         /* store (ni ? nj) at position i
            we have to store in result as well so that when we output the

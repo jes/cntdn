@@ -59,6 +59,8 @@ void print_vals(void) {
 
     printf("%d %c %d = %d\n", n1, opname[o], n2, r);
   }
+
+  printf("Solved.\n");
 }
 
 /* recursively solve the game, up to "levels" levels of recursion */
@@ -126,8 +128,13 @@ int solve(void) {
 
   numbers = 6;
 
+  /* see if one of these numbers is the answer */
+  for(i = 0; i < 6; i++) {
+    if(number[i] == target) return 1;
+  }
+
   /* iteratively deepen the DFS */
-  for(i = 1; i <= 6; i++) {
+  for(i = 2; i <= 6; i++) {
     if(recurse_solve(i)) return 1;
   }
 

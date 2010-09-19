@@ -11,10 +11,8 @@
 #define DIV1 4
 #define DIV2 5
 
-static int sp = 0;
-static int stack[32];
-
 int numbers;
+int num_levels;
 
 /* apply operation o to n1 and n2 and return the result
    fails silently on division by zero or invalid operator */
@@ -31,52 +29,40 @@ int op(int o, int n1, int n2) {
   return 0;
 }
 
-/* push the given values on to the output stack
-   to output in form "n1 o n2 = r" */
-void push_vals(int n1, int o, int n2, int r) {
-  if(o == SUB2 || o == DIV2) {
-    stack[sp++] = n2;
-    stack[sp++] = o;
-    stack[sp++] = n1;
-  } else {
-    stack[sp++] = n1;
-    stack[sp++] = o;
-    stack[sp++] = n2;
-  }
-  stack[sp++] = r;
-}
-
-/* prints the operands/operators stored on the stack */
-void print_vals(void) {
+/* prints the operands/operators stored on the call stack
+   WARNING: deep magic. this function calculates the size of one recurse_solve()
+   stack frame by looking at the difference in address between the two pointers.
+   it then prints out the values in a sane order by obtaining pointers to the
+   Frame structure in each stack frame in turn. */
+void print_vals(Frame *f1, Frame *f2) {
   static char opname[6] = { '+', '-', '-', '*', '/', '/' };
-  int n1, o, n2, r;
+  int frame_size = f2 - f1;
+  Frame *f;
+  int i;
 
-  while(sp) {
-    r  = stack[--sp];
-    n2 = stack[--sp];
-    o  = stack[--sp];
-    n1 = stack[--sp];
+  for(i = num_levels - 1; i >= 0; i--) {
+    f = f1 + i * frame_size;
 
-    printf("%d %c %d = %d\n", n1, opname[o], n2, r);
+    if(f->o == SUB2 || f->o == DIV2)
+      printf("%d %c %d = %d\n", f->n2, opname[f->o], f->n1, f->r);
+    else
+      printf("%d %c %d = %d\n", f->n1, opname[f->o], f->n2, f->r);
   }
-
-  printf("Solved.\n");
 }
 
 /* recursively solve the game, up to "levels" levels of recursion */
-static int recurse_solve(int levels) {
-  int i, j, o;
+static int recurse_solve(Frame *parent_f, int levels) {
+  int i, j;
   int k;
-  int ni, nj;
-  int result;
+  Frame f;
 
   if(levels == 0) return 0;
 
   for(i = 0; i < numbers - 1; i++) {
-    ni = number[i];
+    f.n1 = number[i];
 
     for(j = i + 1; j < numbers; j++) {
-      nj = number[j];
+      f.n2 = number[j];
 
       /* one number used up */
       numbers--;
@@ -84,44 +70,44 @@ static int recurse_solve(int levels) {
       /* move everything after position j along to fill the gap */
       for(k = j; k < numbers; k++) number[k] = number[k + 1];
 
-      for(o = 0; o < 6; o++) {
-        if((o == DIV1) && (nj == 0 || ni % nj != 0)) continue;
-        if((o == DIV2) && (ni == 0 || nj % ni != 0)) continue;
-        if((o == SUB1) && (nj > ni)) continue;
-        if((o == SUB2) && (ni > nj)) continue;
+      for(f.o = 0; f.o < 6; f.o++) {
+        if((f.o == DIV1) && (f.n2 == 0 || f.n1 % f.n2 != 0)) continue;
+        if((f.o == DIV2) && (f.n1 == 0 || f.n2 % f.n1 != 0)) continue;
+        if((f.o == SUB1) && (f.n2 > f.n1)) continue;
+        if((f.o == SUB2) && (f.n1 > f.n2)) continue;
 
-        /* store (ni ? nj) at position i
-           we have to store in result as well so that when we output the
-           answer the shortcut stack unwinding could have the wrong value
-           in number[i] */
-        number[i] = result = op(o, ni, nj);
+        /* store (f.n1 ? f.n2) at position i */
+        number[i] = f.r = op(f.o, f.n1, f.n2);
 
-        /* if the result is the target, we short-circuit and push values,
-           otherwise solve() is called, and if it returns 1 we push values */
-        if(result == target || recurse_solve(levels - 1)) {
-          push_vals(ni, o, nj, result);
+        /* if solved, print solution and return */
+        if(f.r == target) {
+          print_vals(&f, parent_f);
           return 1;
         }
+        
+        /* recurse, and if it gets solved return */
+        if(recurse_solve(&f, levels - 1))
+          return 1;
       }
 
       /* move numbers along to make space at j */
       for(k = numbers; k > j; k--) number[k] = number[k - 1];
 
       /* put j back in */
-      number[j] = nj;
+      number[j] = f.n2;
 
       /* extra number present again */
       numbers++;
     }
 
     /* put i back in */
-    number[i] = ni;
+    number[i] = f.n1;
   }
 
   return 0;
 }
 
-/* solve the game, returning 1 if solved and 0 otherwise */
+/* solve the game, returf.n1ng 1 if solved and 0 otherwise */
 int solve(void) {
   int i;
 
@@ -129,12 +115,15 @@ int solve(void) {
 
   /* see if one of these numbers is the answer */
   for(i = 0; i < 6; i++) {
-    if(number[i] == target) return 1;
+    if(number[i] == target) {
+      printf("%d = %d\n", number[i], target);
+      return 1;
+    }
   }
 
   /* iteratively deepen the DFS */
-  for(i = 2; i <= 6; i++) {
-    if(recurse_solve(i)) return 1;
+  for(num_levels = 2; num_levels <= 6; num_levels++) {
+    if(recurse_solve(NULL, num_levels)) return 1;
   }
 
   return 0;

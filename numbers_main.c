@@ -29,8 +29,7 @@ int main(int argc, char **argv) {
   numbers = 6;
 
   /* solve these numbers */
-  if(solve() == 1) print_vals();
-  else fprintf(stderr, "No solution.\n");
+  if(solve() != 1) fprintf(stderr, "No solution.\n");
 
   return 0;
 }

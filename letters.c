@@ -11,13 +11,12 @@ TrieNode *dictionary;
 static int solve_num_letters;
 static char *used_letter;
 
-/* return a number 0..25 to be used as a trie child index, or -1 if it's not a
-   usable letter */
-static int letter_idx(char c) {
-  if(c >= 'A' && c <= 'Z') return c - 'A';
-  if(c >= 'a' && c <= 'z') return c - 'a';
-  return -1;
-}
+/* this table is filled in by load_dictionary(). Before this table was
+   introduced, 40% of execution time in solving letters (excluding loading the
+   dictionary) was spent calculating letter indices. The table reduces that to
+   about 1% */
+static int idx_table[256];
+#define letter_idx(c) (idx_table[(int)c])
 
 /* allocate an empty node for the trie, setting all of the fields to zero */
 static TrieNode *make_trienode(void) {
@@ -74,6 +73,14 @@ void load_dictionary(const char *path, int maxlen) {
   FILE *fp;
   char *p;
   char buf[BUFLEN];
+  int i;
+
+  /* initialise the letter_idx table */
+  for(i = 0; i < 256; i++) {
+    if(i >= 'A' && i <= 'Z') idx_table[i] = i - 'A';
+    else if(i >= 'a' && i <= 'z') idx_table[i] = i - 'a';
+    else idx_table[i] = -1;
+  }
 
   if(!(fp = fopen(path, "r")))
     die("error: unable to open '%s' for reading; try using --dictionary", path);

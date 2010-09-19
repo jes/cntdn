@@ -107,7 +107,7 @@ static int recurse_solve(Frame *parent_f, int levels) {
   return 0;
 }
 
-/* solve the game, returf.n1ng 1 if solved and 0 otherwise */
+/* solve the game, returning 1 if solved and 0 otherwise */
 int solve(void) {
   int i;
 

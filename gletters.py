@@ -30,8 +30,7 @@ class GLetters:
       if line == '\n':
         break
       if line == '':
-        sys.stderr.write('Letters solver died?\n')
-        gtk.main_quit()
+        sys.exit()
       lines.append(line)
 
     lines.sort(cmp=lengthcmp)

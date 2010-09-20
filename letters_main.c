@@ -98,6 +98,7 @@ int main(int argc, char **argv) {
       solve_letters(buf, output_words);
 
       putchar('\n');
+      fflush(stdout);
     }
   } else /* not interactive_mode */ {
     if(optind >= argc)

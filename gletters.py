@@ -3,10 +3,15 @@
 # James Stanley 2010
 
 import subprocess
+import sys
 
 import pygtk
 pygtk.require('2.0')
 import gtk
+import pango
+
+def lengthcmp(s1, s2):
+  return len(s2) - len(s1)
 
 class GLetters:
   def delete_event(self, widget, event, data=None):
@@ -16,9 +21,21 @@ class GLetters:
     gtk.main_quit()
 
   def solve_letters(self, widget, event, data=None):
-    p = subprocess.Popen(['./letters', self.inputbox.get_text()], \
-        stdout=subprocess.PIPE)
-    text = p.communicate()[0]
+    self.solver.stdin.write(self.inputbox.get_text() + '\n')
+
+    lines = []
+
+    while True:
+      line = self.solver.stdout.readline()
+      if line == '\n':
+        break
+      if line == '':
+        sys.stderr.write('Letters solver died?\n')
+        gtk.main_quit()
+      lines.append(line)
+
+    lines.sort(cmp=lengthcmp)
+    text = ''.join(lines)
     self.wordlist.set_text(text)
 
   def __init__(self):
@@ -26,15 +43,16 @@ class GLetters:
     self.inputbox = gtk.Entry()
     self.wordlist = gtk.TextBuffer()
 
-    self.window.set_title("gletters")
-    self.window.connect("delete_event", self.delete_event)
-    self.window.connect("destroy", self.destroy)
+    self.window.set_title('gletters')
+    self.window.connect('delete_event', self.delete_event)
+    self.window.connect('destroy', self.destroy)
 
     self.inputbox.connect("key_release_event", self.solve_letters)
 
     textview = gtk.TextView()
     textview.set_buffer(self.wordlist)
     textview.set_editable(False)
+    textview.modify_font(pango.FontDescription('Monospace'))
 
     box = gtk.VBox(False, 0)
     box.pack_start(self.inputbox, False, True, 0)
@@ -46,9 +64,12 @@ class GLetters:
 
     self.window.show_all()
 
+    self.solver = subprocess.Popen(['./letters', '-I', '-m0'], \
+                  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
   def main(self):
     gtk.main()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   gletters = GLetters()
   gletters.main()

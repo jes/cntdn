@@ -10,7 +10,7 @@ int players = 1;
 int timer = 30;
 char *format = "llllngtllllontlllnc";
 int nocolour = 0;
-char *dictionary_path = "./dictionary";
+char *dictionary_path = DEFAULT_DICT;
 int ignore_invalid = 0;
 int noflush = 0;
 int num_letters = 9;
@@ -38,7 +38,7 @@ static void usage(void) {
   "  -c, --colour          Enable coloured output (default if stdout is a\n"
   "                        terminal)\n"
   "  -d, --dictionary=STR  Set the path to the dictionary file (default:\n"
-  "                        ./dictionary)\n"
+  "                        " DEFAULT_DICT ")\n"
   "  -f, --format=STR      Set the game format as described below (default:\n"
   "                        llllngtllllontlllnc)\n"
   "  -h, --help            Display this help\n"

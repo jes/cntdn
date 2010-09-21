@@ -38,7 +38,7 @@ static void usage(void) {
   "\n"
   "Options:\n"
   "  -d, --dictionary=STR  Set the path to the dictionary file (default:\n"
-  "                        ./dictionary)\n"
+  "                        " DEFAULT_DICT ")\n"
   "  -h, --help            Display this help\n"
   "  -i, --ignore-invalid  Suppress warnings about invalid words in the\n"
   "                        dictionary\n"
@@ -66,7 +66,7 @@ static void output_words(const char *word) {
 
 int main(int argc, char **argv) {
   int c;
-  char *dict = "./dictionary";
+  char *dict = DEFAULT_DICT;
   char *letters;
   char buf[512];
   char *p;

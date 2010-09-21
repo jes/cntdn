@@ -9,7 +9,12 @@ set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-O3")
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O3")
 
+set(DEFAULT_DICT ${CMAKE_INSTALL_PREFIX}/share/dict/cntdn-dictionary)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+
 install(TARGETS letters numbers cntdn
         RUNTIME DESTINATION bin)
 install(PROGRAMS gletters.py RENAME gletters
         DESTINATION bin)
+install(FILES dictionary RENAME cntdn-dictionary
+        DESTINATION share/dict)

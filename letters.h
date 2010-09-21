@@ -10,6 +10,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <stdio.h>
+#include "config.h"
 
 #ifndef BUFLEN
 #define BUFLEN 8192

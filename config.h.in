@@ -1,0 +1,12 @@
+/* Configuration for cntdn
+
+   This file is filled in by cmake
+
+   James Stanley 2010 */
+
+#ifndef CONFIG_H_INC
+#define CONFIG_H_INC
+
+#cmakedefine DEFAULT_DICT "@DEFAULT_DICT@"
+
+#endif

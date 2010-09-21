@@ -34,7 +34,7 @@ class GLetters:
       lines.append(line)
 
     text = ''
-    for line in sorted(lines, cmp=lengthcmp):
+    for line in sorted(lines, key = lambda s: -len(s)):
       text = text + line.capitalize()
     self.wordlist.set_text(text)
 
@@ -46,6 +46,8 @@ class GLetters:
     self.window.set_title('gletters')
     self.window.connect('delete_event', self.delete_event)
     self.window.connect('destroy', self.destroy)
+    self.window.resize(200, 300)
+    self.window.set_position(gtk.WIN_POS_CENTER)
 
     self.inputbox.connect("key_release_event", self.solve_letters)
 

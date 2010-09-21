@@ -116,9 +116,7 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
     if(used_letter[i]) continue;
     if(done[letter_idx(letters[i])]) continue;
 
-    if((idx = letter_idx(letters[i])) == -1)
-      die("error: tried to solve letters '%s' containing non-letter '%c'",
-          letters, letters[i]);
+    if((idx = letter_idx(letters[i])) == -1) continue;
 
     if(node->child[idx]) {
       used_letter[i] = 1;

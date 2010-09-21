@@ -11,3 +11,5 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O3")
 
 install(TARGETS letters numbers cntdn
         RUNTIME DESTINATION bin)
+install(PROGRAMS gletters.py RENAME gletters
+        DESTINATION bin)

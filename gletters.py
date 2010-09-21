@@ -21,7 +21,7 @@ class GLetters:
     gtk.main_quit()
 
   def solve_letters(self, widget, event, data=None):
-    self.solver.stdin.write(self.inputbox.get_text() + '\n')
+    self.solver.stdin.write(self.inputbox.get_text().lower() + '\n')
 
     lines = []
 
@@ -33,8 +33,9 @@ class GLetters:
         sys.exit()
       lines.append(line)
 
-    lines.sort(cmp=lengthcmp)
-    text = ''.join(lines)
+    text = ''
+    for line in sorted(lines, cmp=lengthcmp):
+      text = text + line.capitalize()
     self.wordlist.set_text(text)
 
   def __init__(self):

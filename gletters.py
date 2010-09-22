@@ -66,7 +66,7 @@ class GLetters:
 
     self.window.show_all()
 
-    self.solver = subprocess.Popen(['./letters', '-I', '-m0'], \
+    self.solver = subprocess.Popen(['letters', '-I', '-m0'], \
                   stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
   def main(self):

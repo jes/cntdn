@@ -114,15 +114,14 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 
   for(i = 0; i < solve_num_letters; i++) {
     if(used_letter[i]) continue;
-    if(done[letter_idx(letters[i])]) continue;
-
     if((idx = letter_idx(letters[i])) == -1) continue;
+    if(done[idx]) continue;
 
     if(node->child[idx]) {
       used_letter[i] = 1;
       answer[level] = letters[i];
 
-      done[letter_idx(letters[i])] = 1;
+      done[idx] = 1;
 
       recurse_solve(letters, node->child[idx], answer, level+1, callback);
 

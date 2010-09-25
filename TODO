@@ -58,4 +58,4 @@ answer flips over slowly
 10 points to winner
 
 numbers solver:
-use linked list and Dancing Links
+use linked list and Dancing Links (NOTE: did this and it turned out a little slower than array shuffling)

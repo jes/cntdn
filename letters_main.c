@@ -91,6 +91,9 @@ int main(int argc, char **argv) {
 
     load_dictionary(dict, 0);
 
+    /* disable block buffering */
+    setvbuf(stdout, NULL, _IOLBF, 0);
+
     /* read letters from stdin until EOF */
     while(fgets(buf, 512, stdin)) {
       if((p = strchr(buf, '\n'))) *p = '\0';

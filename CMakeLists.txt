@@ -16,5 +16,7 @@ install(TARGETS letters numbers cntdn
         RUNTIME DESTINATION bin)
 install(PROGRAMS gletters.py RENAME gletters
         DESTINATION bin)
+install(PROGRAMS tkletters.pl RENAME tkletters
+        DESTINATION bin)
 install(FILES dictionary RENAME cntdn-dictionary
         DESTINATION share/dict)

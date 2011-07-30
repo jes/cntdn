@@ -8,5 +8,15 @@ tkletters - perl tk solver for the letters game
 There is also the game/ directory which contains a very silly and unfinished
 simulator for the countdown game.
 
+Build and install the solvers with:
+$ mkdir build && cd build
+$ cmake .. && make
+# make install
+
+Build and install the game simulator with:
+$ mkdir game/build && cd game/build
+$ cmake .. && make
+# make install
+
 The dictionary is 2of4brif.txt from 12dicts revision 5.
 http://wordlist.sourceforge.net/

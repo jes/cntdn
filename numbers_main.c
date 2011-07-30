@@ -2,7 +2,6 @@
 
    James Stanley 2010 */
 
-#include "cntdn.h"
 #include "numbers.h"
 
 int number[6];

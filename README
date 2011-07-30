@@ -1,2 +1,12 @@
+This project includes the following programs:
+
+numbers - command-line solver for the numbers game
+letters - command-line solver for the letters game
+gletters - python gtk solver for the letters game
+tkletters - perl tk solver for the letters game
+
+There is also the game/ directory which contains a very silly and unfinished
+simulator for the countdown game.
+
 The dictionary is 2of4brif.txt from 12dicts revision 5.
 http://wordlist.sourceforge.net/

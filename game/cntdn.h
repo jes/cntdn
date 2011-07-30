@@ -87,6 +87,6 @@ int valid_word(int p, const char *letters);
 void dict_solve(const char *letters);
 
 /* letters.c */
-#include "letters.h"
+#include "../letters.h"
 
 #endif

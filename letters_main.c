@@ -2,7 +2,6 @@
 
    James Stanley 2010 */
 
-#include "cntdn.h"
 #include "letters.h"
 
 int ignore_invalid = 0;

@@ -2,14 +2,11 @@
 
    This file is used by cntdn as well as by the stand-alone solver
 
-   James Stanley 2010 */
+   James Stanley 2011 */
 
 #include "letters.h"
 
 TrieNode *dictionary;
-
-static int solve_num_letters;
-static char *used_letter;
 
 /* this table is filled in by load_dictionary(). Before this table was
    introduced, 40% of execution time in solving letters (excluding loading the
@@ -103,16 +100,17 @@ void load_dictionary(const char *path, int maxlen) {
 /* Recursively solve the letters game. Do not call this function, it is used by
    solve_letters() to do the actual solving */
 static void recurse_solve(const char *letters, TrieNode *node, char *answer,
-                          int level, void (*callback)(const char *word)) {
+                          int level, int nletters, char *used_letter,
+                          void (*callback)(const char *word)) {
   int i;
   int idx;
   char done[26] = { 0 };
 
   if(node->end_word) callback(answer);
 
-  if(level == solve_num_letters) return;
+  if(level == nletters) return;
 
-  for(i = 0; i < solve_num_letters; i++) {
+  for(i = 0; i < nletters; i++) {
     if(used_letter[i]) continue;
     if((idx = letter_idx(letters[i])) == -1) continue;
     if(done[idx]) continue;
@@ -123,7 +121,8 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 
       done[idx] = 1;
 
-      recurse_solve(letters, node->child[idx], answer, level+1, callback);
+      recurse_solve(letters, node->child[idx], answer, level+1, nletters,
+                    used_letter, callback);
 
       used_letter[i] = 0;
     }
@@ -135,18 +134,20 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 /* Solves the letters game for the given letters by calling 'callback' with
    each of the words found */
 void solve_letters(const char *letters, void (*callback)(const char *word)) {
-  char *word;
+  int nletters = strlen(letters);
+  char *used_letter;
+  char *answer;
 
-  solve_num_letters = strlen(letters);
-  used_letter = malloc(solve_num_letters);
-  memset(used_letter, 0, solve_num_letters);
+  used_letter = malloc(nletters);
+  memset(used_letter, 0, nletters);
 
-  word = malloc(solve_num_letters + 1);
-  memset(word, 0, solve_num_letters + 1);
+  answer = malloc(nletters + 1);
+  memset(answer, 0, nletters + 1);
 
-  recurse_solve(letters, dictionary, word, 0, callback);
+  recurse_solve(letters, dictionary, answer, 0, nletters, used_letter,
+                callback);
 
-  free(word);
+  free(answer);
   free(used_letter);
 }
 

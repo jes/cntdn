@@ -59,7 +59,7 @@ static void usage(void) {
 }
 
 /* callback for solve_letters() to output words of at least minletters */
-static void output_words(const char *word) {
+static void output_words(const char *word, void *unused) {
   if(strlen(word) >= minletters) puts(word);
 }
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
     while(fgets(buf, 512, stdin)) {
       if((p = strchr(buf, '\n'))) *p = '\0';
 
-      solve_letters(buf, output_words);
+      solve_letters(buf, output_words, NULL);
 
       putchar('\n');
       fflush(stdout);
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
 
     load_dictionary(dict, strlen(letters));
 
-    solve_letters(letters, output_words);
+    solve_letters(letters, output_words, NULL);
   }
 
   return 0;

@@ -101,12 +101,13 @@ void load_dictionary(const char *path, int maxlen) {
    solve_letters() to do the actual solving */
 static void recurse_solve(const char *letters, TrieNode *node, char *answer,
                           int level, int nletters, char *used_letter,
-                          void (*callback)(const char *word)) {
+                          void (*callback)(const char *word, void *data),
+                          void *data) {
   int i;
   int idx;
   char done[26] = { 0 };
 
-  if(node->end_word) callback(answer);
+  if(node->end_word) callback(answer, data);
 
   if(level == nletters) return;
 
@@ -122,7 +123,7 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
       done[idx] = 1;
 
       recurse_solve(letters, node->child[idx], answer, level+1, nletters,
-                    used_letter, callback);
+                    used_letter, callback, data);
 
       used_letter[i] = 0;
     }
@@ -133,7 +134,9 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
 
 /* Solves the letters game for the given letters by calling 'callback' with
    each of the words found */
-void solve_letters(const char *letters, void (*callback)(const char *word)) {
+void solve_letters(const char *letters,
+                   void (*callback)(const char *word, void *data),
+                   void *data) {
   int nletters = strlen(letters);
   char *used_letter;
   char *answer;
@@ -145,7 +148,7 @@ void solve_letters(const char *letters, void (*callback)(const char *word)) {
   memset(answer, 0, nletters + 1);
 
   recurse_solve(letters, dictionary, answer, 0, nletters, used_letter,
-                callback);
+                callback, data);
 
   free(answer);
   free(used_letter);

@@ -27,7 +27,8 @@ extern int ignore_invalid;
 extern int minletters;
 
 void load_dictionary(const char *path, int maxlen);
-void solve_letters(const char *letters, void (*callback)(const char *word));
+void solve_letters(const char *letters,
+                   void (*callback)(const char *word, void *data), void *data);
 int word_in_dictionary(const char *word);
 int can_make_word(const char *word, const char *letters);
 void die(const char *fmt, ...);

@@ -52,7 +52,7 @@ int valid_word(int p, const char *letters) {
 }
 
 /* callback for solve_letters to store best word */
-static void store_word(const char *word) {
+static void store_word(const char *word, void *unused) {
   if(strlen(word) > strlen(best_word)) strncpy(best_word, word, 255);
   best_word[255] = '\0';
 }
@@ -66,7 +66,7 @@ void dict_solve(const char *letters) {
 
   best_word[0] = '\0';
 
-  solve_letters(letters, store_word);
+  solve_letters(letters, store_word, NULL);
 
   for(i = 0; best_word[i]; i++) {
     best_word[i] = tolower(best_word[i]);

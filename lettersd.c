@@ -113,6 +113,7 @@ static int start_listening(const char *addr, const char *port) {
     return fd;
 }
 
+/* callback for solve_letters to send a word to the client */
 void send_word(const char *word, void *data) {
     int fd = *(int *)data;
     char nl = '\n';
@@ -121,6 +122,7 @@ void send_word(const char *word, void *data) {
     write(fd, &nl, 1);
 }
 
+/* read letter sets from a client and solve them */
 void *client_thread(void *arg) {
     int fd = *(int *)arg;
     char buf[1024];
@@ -144,6 +146,7 @@ void *client_thread(void *arg) {
     return NULL;
 }
 
+/* make a thread to handle a client */
 void handle_client(int fd) {
     pthread_t tid;
     int *fd_ptr = malloc(sizeof(int));

@@ -12,10 +12,13 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <pthread.h>
+#include <signal.h>
 #include "letters.h"
 
 int ignore_invalid = 1;
 int minletters = 0;
+
+volatile sig_atomic_t nclients = 0;
 
 static struct option opts[] = {
     { "dictionary",     required_argument, NULL, 'd' },
@@ -150,11 +153,15 @@ void *client_thread(void *arg) {
         }
     }
 
+    free(arg);
+
     if(n == -1) {
         perror("read");
     }
 
     close(fd);
+
+    nclients--;
 
     return NULL;
 }
@@ -168,8 +175,11 @@ void handle_client(int fd) {
 
     if(pthread_create(&tid, NULL, client_thread, fd_ptr) != 0) {
         perror("pthread_create");
-        exit(1);
+        close(fd);
+        return;
     }
+
+    nclients++;
 }
 
 int main(int argc, char **argv) {
@@ -207,7 +217,14 @@ int main(int argc, char **argv) {
         int clientfd = accept(fd, (struct sockaddr *)&their_addr, &sin_size);
 
         if(clientfd != -1) {
-            handle_client(clientfd);
+            if(nclients < maxclients || maxclients < 0) {
+                handle_client(clientfd);
+            } else {
+                char *err = "!too many clients\n";
+                fprintf(stderr, "warning: disconnecting client because there are too many\n");
+                write(clientfd, err, strlen(err));
+                close(clientfd);
+            }
         } else {
             perror("accept");
             exit(1);

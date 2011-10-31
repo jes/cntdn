@@ -14,11 +14,6 @@
 #include <pthread.h>
 #include "letters.h"
 
-struct thread_state {
-    const char *letters;
-    int fd;
-};
-
 int ignore_invalid = 1;
 int minletters = 0;
 
@@ -126,15 +121,33 @@ void send_word(const char *word, void *data) {
 void *client_thread(void *arg) {
     int fd = *(int *)arg;
     char buf[1024];
+    char *p;
+    size_t gotbytes = 0;
     int n;
     char nl = '\n';
 
-    while((n = read(fd, buf, 1024)) > 0) {
-        buf[n - 1] = '\0';
+    while((n = read(fd, buf + gotbytes, 1024 - gotbytes)) > 0) {
+        buf[gotbytes + n] = '\0';
+        printf("read %s\n", buf + gotbytes);
+        gotbytes += n;
 
-        solve_letters(buf, send_word, arg);
+        while((p = strchr(buf, 'X'))) {
+            *p = '\0';
 
-        write(fd, &nl, 1);
+            solve_letters(buf, send_word, arg);
+
+            write(fd, &nl, 1);
+
+            memmove(buf, p + 1, gotbytes - (p + 1 - buf));
+
+            gotbytes -= p + 1 - buf;
+        }
+
+        if(gotbytes >= 1024) {
+            char *err = "!line too long\n";
+            write(fd, err, strlen(err));
+            break;
+        }
     }
 
     if(n == -1) {

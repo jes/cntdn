@@ -39,6 +39,7 @@ static void usage(void) {
     "Usage: lettersd [OPTIONS...]\n"
     "\n"
     "Options:\n"
+    "  -D, --daemonize     Daemonize instead of running in the foreground\n"
     "  -d, --dictionary    Set the path to the dictionary file (default:\n"
     "                      " DEFAULT_DICT ")\n"
     "  -h, --help          Display this help\n"
@@ -47,7 +48,7 @@ static void usage(void) {
     "                      (default: -1)\n"
     "  -p, --port          Set the port number to listen on (default: 17220)\n"
     "\n"
-    "For the --max-clients option -1 means no limit.\n"
+    "For the --max-clients option a negative value means no limit.\n"
     "\n"
     "Report bugs to James Stanley <james@incoherency.co.uk>\n"
     );
@@ -98,7 +99,8 @@ static int start_listening(const char *addr, const char *port) {
 
     /* we reached the end of the servinfo list without successfully binding */
     if(!p) {
-        fprintf(stderr, "failed to bind to any of %d addresses\n", num_addrs);
+        fprintf(stderr, "error: failed to bind to any of %d addresses\n",
+                num_addrs);
         return -1;
     }
 
@@ -130,20 +132,18 @@ void *client_thread(void *arg) {
     char nl = '\n';
 
     while((n = read(fd, buf + gotbytes, 1024 - gotbytes)) > 0) {
-        buf[gotbytes + n] = '\0';
-        printf("read %s\n", buf + gotbytes);
         gotbytes += n;
+        buf[gotbytes] = '\0';
 
         while((p = strchr(buf, '\n'))) {
             *p = '\0';
 
             solve_letters(buf, send_word, arg);
-
             write(fd, &nl, 1);
 
-            memmove(buf, p + 1, gotbytes - (p + 1 - buf));
-
             gotbytes -= p + 1 - buf;
+            memmove(buf, p + 1, gotbytes);
+            buf[gotbytes] = '\0';
         }
 
         if(gotbytes >= 1024) {
@@ -183,6 +183,7 @@ void handle_client(int fd) {
 }
 
 int main(int argc, char **argv) {
+    int daemonize = 0;
     char *dict = DEFAULT_DICT;
     char *listenaddr = "localhost";
     int maxclients = -1;
@@ -194,8 +195,9 @@ int main(int argc, char **argv) {
 
     opterr = 1;
 
-    while((c = getopt_long(argc, argv, "d:hl:c:p:", opts, NULL)) != -1) {
+    while((c = getopt_long(argc, argv, "Dd:hl:c:p:", opts, NULL)) != -1) {
         switch(c) {
+            case 'D': daemonize = 1;             break;
             case 'd': dict = optarg;             break;
             case 'h': usage(); exit(0);          break;
             case 'l': listenaddr = optarg;       break;
@@ -211,6 +213,9 @@ int main(int argc, char **argv) {
     if((fd = start_listening(listenaddr, port)) == -1)
         exit(1);
 
+    if(daemonize)
+        daemon(0, 0);
+
     /* repeatedly accept connections and deal with client letter sets */
     while(1) {
         sin_size = sizeof(their_addr);
@@ -221,7 +226,8 @@ int main(int argc, char **argv) {
                 handle_client(clientfd);
             } else {
                 char *err = "!too many clients\n";
-                fprintf(stderr, "warning: disconnecting client because there are too many\n");
+                fprintf(stderr, "warning: disconnecting client because there "
+                                "are too many\n");
                 write(clientfd, err, strlen(err));
                 close(clientfd);
             }

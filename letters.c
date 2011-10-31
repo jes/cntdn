@@ -141,11 +141,9 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
       /* don't recurse on the same character again */
       done[idx] = 1;
 
-      /* recurse. */
       recurse_solve(letters, node->child[idx], answer, level+1, nletters,
                     used_letter, callback, data);
 
-      /* this letter is no longer in use */
       used_letter[i] = 0;
     }
   }

@@ -131,7 +131,7 @@ void *client_thread(void *arg) {
         printf("read %s\n", buf + gotbytes);
         gotbytes += n;
 
-        while((p = strchr(buf, 'X'))) {
+        while((p = strchr(buf, '\n'))) {
             *p = '\0';
 
             solve_letters(buf, send_word, arg);

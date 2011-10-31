@@ -13,7 +13,7 @@ TrieNode *dictionary;
    dictionary) was spent calculating letter indices. The table reduces that to
    about 1% */
 static int idx_table[256];
-#define letter_idx(c) (idx_table[(int)c])
+#define letter_idx(c) (idx_table[(unsigned int)c])
 
 /* allocate an empty node for the trie, setting all of the fields to zero */
 static TrieNode *make_trienode(void) {

@@ -33,6 +33,10 @@ void die(const char *fmt, ...) {
     fprintf(stderr, "Not dying. Segfault expected.\n");
 }
 
+void sigpipe(int sig) {
+    fprintf(stderr, "warning: SIGPIPE received!\n");
+}
+
 static void usage(void) {
     printf(
     "lettersd - daemon for the countdown letters game solver\n"
@@ -116,10 +120,19 @@ static int start_listening(const char *addr, const char *port) {
 /* callback for solve_letters to send a word to the client */
 void send_word(const char *word, void *data) {
     int fd = *(int *)data;
+    int *fd_ptr = data;
     char nl = '\n';
 
-    write(fd, word, strlen(word));
-    write(fd, &nl, 1);
+    /* TODO: write in chunks if the full write does not happen at once */
+
+    if(write(fd, word, strlen(word)) < 0) {
+        *fd_ptr = -1;
+        close(fd);
+    }
+    if(write(fd, &nl, 1) < 0) {
+        *fd_ptr = -1;
+        close(fd);
+    }
 }
 
 /* read letter sets from a client and solve them */
@@ -139,7 +152,9 @@ void *client_thread(void *arg) {
             *p = '\0';
 
             solve_letters(buf, send_word, arg);
-            write(fd, &nl, 1);
+
+            if(write(fd, &nl, 1) < 0)
+                goto disconnect;
 
             gotbytes -= p + 1 - buf;
             memmove(buf, p + 1, gotbytes);
@@ -149,10 +164,11 @@ void *client_thread(void *arg) {
         if(gotbytes >= 1024) {
             char *err = "!line too long\n";
             write(fd, err, strlen(err));
-            break;
+            goto disconnect;
         }
     }
 
+disconnect:
     free(arg);
 
     if(n == -1) {
@@ -213,8 +229,10 @@ int main(int argc, char **argv) {
     if((fd = start_listening(listenaddr, port)) == -1)
         exit(1);
 
-    if(daemonize)
-        daemon(0, 0);
+    if(daemonize && daemon(0, 0) == -1)
+            perror("daemon");
+
+    signal(SIGPIPE, sigpipe);
 
     /* repeatedly accept connections and deal with client letter sets */
     while(1) {

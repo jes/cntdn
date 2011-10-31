@@ -107,24 +107,45 @@ static void recurse_solve(const char *letters, TrieNode *node, char *answer,
   int idx;
   char done[26] = { 0 };
 
+  /* if this node can represent the end of a word, output it */
   if(node->end_word) callback(answer, data);
 
+  /* if all child nodes represent words which are too long, stop searching */
   if(level == nletters) return;
 
+  /* for each of the letters we have */
   for(i = 0; i < nletters; i++) {
+    /* if this letter is already used do not use it again */
     if(used_letter[i]) continue;
+
+    /* if this is not an actual letter do not try to use it */
     if((idx = letter_idx(letters[i])) == -1) continue;
+
+    /* if we have already recursed on this letter index, don't bother trying
+     * again - this prevents recursing on 'a' twice and getting duplicated
+     * output.
+     */
     if(done[idx]) continue;
 
+    /* if there is a child with this letter, recurse.
+     * if the current node represents 'fo' and the current letter is 'o', the
+     * child node represents 'foo'.
+     */
     if(node->child[idx]) {
+      /* don't allow this letter to be used twice */
       used_letter[i] = 1;
+
+      /* append to the answer */
       answer[level] = letters[i];
 
+      /* don't recurse on the same character again */
       done[idx] = 1;
 
+      /* recurse. */
       recurse_solve(letters, node->child[idx], answer, level+1, nletters,
                     used_letter, callback, data);
 
+      /* this letter is no longer in use */
       used_letter[i] = 0;
     }
   }

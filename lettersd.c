@@ -206,6 +206,7 @@ int main(int argc, char **argv) {
     char *port = "17220";
     socklen_t sin_size;
     struct sockaddr_storage their_addr;
+    struct sigaction sigpipe_handler;
     int fd;
     int c;
 
@@ -232,7 +233,11 @@ int main(int argc, char **argv) {
     if(daemonize && daemon(0, 0) == -1)
             perror("daemon");
 
-    signal(SIGPIPE, sigpipe);
+    /* warn about sigpipe */
+    memset(&sigpipe_handler, 0, sizeof(sigpipe_handler));
+    sigpipe_handler.sa_handler = sigpipe;
+    sigemptyset(&sigpipe_handler.sa_mask);
+    sigaction(SIGPIPE, sigpipe_handler);
 
     /* repeatedly accept connections and deal with client letter sets */
     while(1) {

@@ -1,6 +1,6 @@
 /* Letters game solver for cntdn
 
-   This file is used by cntdn as well as by the stand-alone solver
+   This file is used by cntdn and lettersd as well as by the stand-alone solver
 
    James Stanley 2011 */
 

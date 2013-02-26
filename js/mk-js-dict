@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+# Make a javascript trie representing a dictionary
+# James Stanley 2013
+
+use strict;
+use warnings;
+
+use JSON;
+
+my $dictionary = {};
+
+while (<>) {
+    chomp;
+
+    add_word($_);
+}
+
+print 'var dictionary=' . encode_json($dictionary) . ";\n";
+
+sub add_word {
+    my ($word) = @_;
+
+    my $n = $dictionary;
+
+    while (length $word) {
+        # TODO: deal with invalid letters
+
+        $word =~ s/^(.)//;
+        my $c = $1;
+
+        if (!$n->{$c}) {
+            $n->{$c} = {};
+        }
+
+        $n = $n->{$c};
+    }
+
+    $n->{0} = 1;
+}

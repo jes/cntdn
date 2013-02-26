@@ -126,12 +126,16 @@ void send_word(const char *word, void *data) {
     /* TODO: write in chunks if the full write does not happen at once */
 
     if(write(fd, word, strlen(word)) < 0) {
-        *fd_ptr = -1;
+        perror("write");
         close(fd);
+        *fd_ptr = -1;
+        pthread_exit(NULL);
     }
     if(write(fd, &nl, 1) < 0) {
-        *fd_ptr = -1;
+        perror("write");
         close(fd);
+        *fd_ptr = -1;
+        pthread_exit(NULL);
     }
 }
 
@@ -237,7 +241,7 @@ int main(int argc, char **argv) {
     memset(&sigpipe_handler, 0, sizeof(sigpipe_handler));
     sigpipe_handler.sa_handler = sigpipe;
     sigemptyset(&sigpipe_handler.sa_mask);
-    sigaction(SIGPIPE, sigpipe_handler);
+    sigaction(SIGPIPE, NULL, &sigpipe_handler);
 
     /* repeatedly accept connections and deal with client letter sets */
     while(1) {

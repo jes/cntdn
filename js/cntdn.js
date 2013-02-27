@@ -36,8 +36,10 @@ function solve_letters(letters, cb) {
 var OPS = {
     "+": function(n1, n2) { if (n1 < 0 || n2 < 0) return false; return n1+n2; },
     "-": function(n1, n2) { if (n2 >= n1) return false; return n1-n2; },
+    "_": function(n2, n1) { if (n2 >= n1) return false; return n1-n2; },
     "*": function(n1, n2) { return n1*n2; },
     "/": function(n1, n2) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
+    "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
 var cache = {};
@@ -46,9 +48,9 @@ function _recurse_solve_numbers(numbers, target, levels) {
     if (levels == 0)
         return false;
 
-    var key = numbers + ":" + target + ":" + (levels-1);
+    var key = numbers + ":" + (levels-1);
 
-    if (typeof cache[key] !== 'undefined')
+    if (key in cache)
         return cache[key];
 
     for (var i = 0; i < numbers.length-1; i++) {
@@ -57,58 +59,64 @@ function _recurse_solve_numbers(numbers, target, levels) {
         if (ni === false)
             continue;
 
+        numbers[i] = false;
+
         for (var j = i+1; j < numbers.length; j++) {
             var nj = numbers[j];
 
             if (nj === false)
                 continue;
 
-            /* try operations with both orders of arguments */
-            for (var x = 0; x < 2; x++) {
+            for (var o in OPS) {
+                var r = OPS[o](ni, nj);
+                if (r === false)
+                    continue;
 
-                for (var o in OPS) {
-                    /* performance hack: doing the multiply or add in the other
-                     * direction is a waste of time
-                     */
-                    if (x == 1 && (o == '*' || o == '+'))
-                        continue;
+                if (r == target)
+                    return [[ni, o, nj, r]];
 
-                    var r = OPS[o](ni, nj);
-                    if (r === false)
-                        continue;
+                numbers[j] = r;
 
-                    if (r == target)
-                        return [[ni, o, nj, r]];
-
-                    var xi = numbers[i];
-                    var xj = numbers[j];
-                    numbers[i] = r;
-                    numbers[j] = false;
-
-                    var solution = _recurse_solve_numbers(numbers, target, levels-1);
-                    cache[key] = solution;
-                    if (solution !== false) {
-                        solution.unshift([ni, o, nj, r]);
-                        return solution;
-                    }
-
-                    numbers[i] = xi;
-                    numbers[j] = xj;
+                var solution = _recurse_solve_numbers(numbers, target, levels-1);
+                cache[key] = solution;
+                if (solution !== false) {
+                    solution.unshift([ni, o, nj, r]);
+                    return solution;
                 }
 
-                /* now swap the args */
-                var nx = ni; ni = nj; nj = nx;
+                numbers[j] = nj;
             }
         }
+
+        numbers[i] = ni;
     }
 
     return false;
 }
 
+function tidyup_result(result) {
+    var mapping = {
+        "?": "/", "_": "-"
+    };
+
+    for (var i = 0; i < result.length; i++) {
+        var subresult = result[i];
+
+        if (subresult[1] in mapping) {
+            subresult[1] = mapping[subresult[1]];
+            var j = subresult[0];
+            subresult[0] = subresult[2];
+            subresult[2] = j;
+        }
+    }
+
+    return result;
+}
+
 function solve_numbers(numbers, target) {
     var diff = 0;
 
-    while (diff < 12) {
+    while (diff < 10) {
         /* walk in a range around the target until we have an answer */
         target += diff;
         if (diff > 0)
@@ -124,10 +132,11 @@ function solve_numbers(numbers, target) {
                 return [target, []];
 
         /* attempt to solve for this target */
-        for (var i = 1; i <= numbers.length; i++) {
+        for (var i = 2; i <= numbers.length; i++) {
             r = _recurse_solve_numbers(numbers, target, i);
 
             if (r !== false) {
+                r = tidyup_result(r);
                 cache = {};
                 return [target, r];
             }

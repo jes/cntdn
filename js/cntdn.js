@@ -54,13 +54,25 @@ function _recurse_solve_numbers(numbers, target, levels) {
     for (var i = 0; i < numbers.length-1; i++) {
         var ni = numbers[i];
 
+        if (ni === false)
+            continue;
+
         for (var j = i+1; j < numbers.length; j++) {
             var nj = numbers[j];
+
+            if (nj === false)
+                continue;
 
             /* try operations with both orders of arguments */
             for (var x = 0; x < 2; x++) {
 
                 for (var o in OPS) {
+                    /* performance hack: doing the multiply or add in the other
+                     * direction is a waste of time
+                     */
+                    if (x == 1 && (o == '*' || o == '+'))
+                        continue;
+
                     var r = OPS[o](ni, nj);
                     if (r === false)
                         continue;
@@ -71,7 +83,7 @@ function _recurse_solve_numbers(numbers, target, levels) {
                     var xi = numbers[i];
                     var xj = numbers[j];
                     numbers[i] = r;
-                    numbers.splice(j, 1);
+                    numbers[j] = false;
 
                     var solution = _recurse_solve_numbers(numbers, target, levels-1);
                     cache[key] = solution;
@@ -80,8 +92,8 @@ function _recurse_solve_numbers(numbers, target, levels) {
                         return solution;
                     }
 
-                    numbers.splice(j, 0, xj);
                     numbers[i] = xi;
+                    numbers[j] = xj;
                 }
 
                 /* now swap the args */

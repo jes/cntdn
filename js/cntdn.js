@@ -33,6 +33,9 @@ function solve_letters(letters, cb) {
     _recurse_solve_letters(letters, dictionary, {}, cb, '');
 }
 
+var bestdiff;
+var bestops;
+
 var OPS = {
     "+": function(n1, n2) { if (n1 < 0 || n2 < 0) return false; return n1+n2; },
     "-": function(n1, n2) { if (n2 >= n1) return false; return n1-n2; },
@@ -42,16 +45,9 @@ var OPS = {
     "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
-var cache = {};
-
-function _recurse_solve_numbers(numbers, target, levels) {
+function _recurse_solve_numbers(numbers, target, levels, howto) {
     if (levels == 0)
         return false;
-
-    var key = numbers + ":" + (levels-1);
-
-    if (key in cache)
-        return cache[key];
 
     for (var i = 0; i < numbers.length-1; i++) {
         var ni = numbers[i];
@@ -72,17 +68,23 @@ function _recurse_solve_numbers(numbers, target, levels) {
                 if (r === false)
                     continue;
 
-                if (r == target)
-                    return [[ni, o, nj, r]];
+                howto.push([ni, o, nj, r]);
+
+                if (Math.abs(r - target) < Math.abs(bestresult - target)) {
+                    bestresult = r;
+                    bestops = howto.slice(0);
+                }
+
+                if (bestresult == target)
+                    return true;
 
                 numbers[j] = r;
 
-                var solution = _recurse_solve_numbers(numbers, target, levels-1);
-                cache[key] = solution;
-                if (solution !== false) {
-                    solution.unshift([ni, o, nj, r]);
-                    return solution;
-                }
+                var solved = _recurse_solve_numbers(numbers, target, levels-1, howto);
+                if (solved)
+                    return true;
+
+                howto.pop();
 
                 numbers[j] = nj;
             }
@@ -114,37 +116,28 @@ function tidyup_result(result) {
 }
 
 function solve_numbers(numbers, target) {
-    var diff = 0;
+    bestresult = numbers[0];
+    bestops = [];
 
-    while (diff < 10) {
-        /* walk in a range around the target until we have an answer */
-        target += diff;
-        if (diff > 0)
-            diff = -diff;
-        else
-            diff = -diff + 1;
-
-        cache = {};
-
-        /* see if one of these numbers is the answer */
-        for (var i = 0; i < numbers.length; i++)
-            if (numbers[i] == target)
-                return [target, []];
-
-        /* attempt to solve for this target */
-        for (var i = 2; i <= numbers.length; i++) {
-            r = _recurse_solve_numbers(numbers, target, i);
-
-            if (r !== false) {
-                r = tidyup_result(r);
-                cache = {};
-                return [target, r];
-            }
+    /* see if one of these numbers is the answer */
+    for (var i = 1; i < numbers.length; i++) {
+        if (Math.abs(numbers[i] - target) < Math.abs(bestresult - target)) {
+            bestresult = numbers[i];
+            bestops = [];
         }
     }
+    if (bestresult == target)
+        return [bestresult, bestops];
 
-    cache = {};
+    /* attempt to solve with iddfs */
+    for (var i = 2; i <= numbers.length; i++) {
+        _recurse_solve_numbers(numbers, target, i, []);
+        bestops = tidyup_result(bestops);
 
-    /* no useful answer */
-    return false;
+        if (bestresult == target)
+            return [bestresult, bestops];
+    }
+
+    /* return best answer */
+    return [bestresult, bestops];
 }

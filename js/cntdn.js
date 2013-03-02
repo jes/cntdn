@@ -35,6 +35,7 @@ function solve_letters(letters, cb) {
 
 var bestdiff;
 var bestops;
+var bestvalsums;
 
 var OPS = {
     "+": function(n1, n2) { if (n1 < 0 || n2 < 0) return false; return n1+n2; },
@@ -45,9 +46,9 @@ var OPS = {
     "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
-function _recurse_solve_numbers(numbers, target, levels, howto) {
+function _recurse_solve_numbers(numbers, target, levels, howto, valsums) {
     if (levels == 0)
-        return false;
+        return;
 
     for (var i = 0; i < numbers.length-1; i++) {
         var ni = numbers[i];
@@ -70,19 +71,18 @@ function _recurse_solve_numbers(numbers, target, levels, howto) {
 
                 howto.push([ni, o, nj, r]);
 
-                if (Math.abs(r - target) < Math.abs(bestresult - target)) {
+                var newvalsums = valsums + r;
+
+                if ((Math.abs(r - target) < Math.abs(bestresult - target))
+                        || (Math.abs(r - target) == Math.abs(bestresult - target) && newvalsums < bestvalsums)) {
                     bestresult = r;
                     bestops = howto.slice(0);
+                    bestvalsums = newvalsums;
                 }
-
-                if (bestresult == target)
-                    return true;
 
                 numbers[j] = r;
 
-                var solved = _recurse_solve_numbers(numbers, target, levels-1, howto);
-                if (solved)
-                    return true;
+                _recurse_solve_numbers(numbers, target, levels-1, howto, newvalsums);
 
                 howto.pop();
 
@@ -92,8 +92,6 @@ function _recurse_solve_numbers(numbers, target, levels, howto) {
 
         numbers[i] = ni;
     }
-
-    return false;
 }
 
 function tidyup_result(result) {
@@ -124,19 +122,18 @@ function solve_numbers(numbers, target) {
         if (Math.abs(numbers[i] - target) < Math.abs(bestresult - target)) {
             bestresult = numbers[i];
             bestops = [];
+            bestvalsums = numbers[i];
         }
     }
     if (bestresult == target)
         return [bestresult, bestops];
 
     /* attempt to solve with iddfs */
-    for (var i = 2; i <= numbers.length; i++) {
-        _recurse_solve_numbers(numbers, target, i, []);
-        bestops = tidyup_result(bestops);
+    _recurse_solve_numbers(numbers, target, numbers.length, [], 0);
+    bestops = tidyup_result(bestops);
 
-        if (bestresult == target)
-            return [bestresult, bestops];
-    }
+    if (bestresult == target)
+        return [bestresult, bestops];
 
     /* return best answer */
     return [bestresult, bestops];

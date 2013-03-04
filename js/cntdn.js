@@ -46,11 +46,11 @@ var OPS = {
     "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
-function _recurse_solve_numbers(starti, numbers, target, levels, howto, valsums) {
+function _recurse_solve_numbers(numbers, target, levels, howto, valsums) {
     if (levels == 0)
         return;
 
-    for (var i = starti; i < numbers.length-1; i++) {
+    for (var i = 0; i < numbers.length-1; i++) {
         var ni = numbers[i];
 
         if (ni === false)
@@ -86,7 +86,7 @@ function _recurse_solve_numbers(starti, numbers, target, levels, howto, valsums)
 
                 numbers[j] = r;
 
-                _recurse_solve_numbers(i+1, numbers, target, levels-1, howto, newvalsums);
+                _recurse_solve_numbers(numbers, target, levels-1, howto, newvalsums);
 
                 howto.pop();
 
@@ -144,7 +144,7 @@ function solve_numbers(numbers, target) {
         return [bestresult, bestops];
 
     /* attempt to solve with dfs */
-    _recurse_solve_numbers(0, numbers, target, numbers.length, [], 0);
+    _recurse_solve_numbers(numbers, target, numbers.length, [], 0);
     bestops = tidyup_result(bestops);
 
     /* return best answer */

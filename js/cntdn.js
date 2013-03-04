@@ -129,22 +129,14 @@ function tidyup_result(result) {
     }
 
     /* simplify ordering of operations */
-    var already_swapped = {};
-    var donesomething = true;
-    while (donesomething) {
-        donesomething = false;
-
-        for (var i = 0; i < result.length - 1; i++) {
-            /* if result i is not used in expression i+1, we can swap them */
-            if (result[i+1][0] != result[i][3]
-                    && result[i+1][2] != result[i][3]
-                    && !(result[i]+result[i+1] in already_swapped)) {
-                var tmp = result[i];
-                result[i] = result[i+1];
-                result[i+1] = tmp;
-                already_swapped[result[i]+result[i+1]] = true;
-                already_swapped[result[i+1]+result[i]] = true;
-                donesomething = true;
+    for (var i = 0; i < result.length - 1; i++) {
+        for (var j = i+1; j < result.length; j++) {
+            /* if result j-1 is not used in expression j, we can swap them */
+            if (result[j][0] != result[j-1][3]
+                    && result[j][2] != result[j-1][3]) {
+                var tmp = result[j-1];
+                result[j-1] = result[j];
+                result[j] = tmp;
             }
         }
     }

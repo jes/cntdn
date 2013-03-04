@@ -17,7 +17,11 @@ while (<>) {
 
 my $jsondict = encode_json($dictionary);
 $jsondict =~ s/"//g;
-print "var dictionary=$jsondict;\n";
+my $y1 = '{0:1,s:{0:1}}';
+$jsondict =~ s/\Q$y1\E/y1/g;
+my $y2 = '{0:1}';
+$jsondict =~ s/\Q$y2\E/y2/g;
+print "var y1=$y1;var y2=$y2;var dictionary=$jsondict;\n";
 
 sub add_word {
     my ($word) = @_;

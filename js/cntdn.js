@@ -47,8 +47,7 @@ var OPS = {
 };
 
 function _recurse_solve_numbers(numbers, target, levels, howto, valsums) {
-    if (levels == 0)
-        return;
+    levels--;
 
     for (var i = 0; i < numbers.length-1; i++) {
         var ni = numbers[i];
@@ -86,7 +85,8 @@ function _recurse_solve_numbers(numbers, target, levels, howto, valsums) {
 
                 numbers[j] = r;
 
-                _recurse_solve_numbers(numbers, target, levels-1, howto, newvalsums);
+                if (levels > 0)
+                    _recurse_solve_numbers(numbers, target, levels, howto, newvalsums);
 
                 howto.pop();
 
@@ -121,6 +121,27 @@ function tidyup_result(result) {
             var j = subresult[0];
             subresult[0] = subresult[2];
             subresult[2] = j;
+        }
+    }
+
+    /* simplify ordering of operations */
+    var already_swapped = {};
+    var donesomething = true;
+    while (donesomething) {
+        donesomething = false;
+
+        for (var i = 0; i < result.length - 1; i++) {
+            /* if result i is not used in expression i+1, we can swap them */
+            if (result[i+1][0] != result[i][3]
+                    && result[i+1][2] != result[i][3]
+                    && !(result[i]+result[i+1] in already_swapped)) {
+                var tmp = result[i];
+                result[i] = result[i+1];
+                result[i+1] = tmp;
+                already_swapped[result[i]+result[i+1]] = true;
+                already_swapped[result[i+1]+result[i]] = true;
+                donesomething = true;
+            }
         }
     }
 

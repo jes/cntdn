@@ -26,6 +26,11 @@ function ui_solve_numbers() {
         return;
     }
 
+    if (numbers.length == 0) {
+        document.getElementById('numbers-answer').value = 'No numbers';
+        return;
+    }
+
     var r = solve_numbers(numbers, target);
 
     if (r === false) {
@@ -44,7 +49,7 @@ function ui_solve_numbers() {
                 }
             ).join("\n");
         } else {
-            text = target + " = " + target;
+            text = result + " = " + result;
         }
 
         document.getElementById('numbers-answer').value = text+explanation;

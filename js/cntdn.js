@@ -71,7 +71,11 @@ function _recurse_solve_numbers(starti, numbers, target, levels, howto, valsums)
 
                 howto.push([ni, o, nj, r]);
 
-                var newvalsums = valsums + r;
+                var op_cost = Math.abs(r);
+                while (op_cost % 10 == 0 && op_cost != 0)
+                    op_cost /= 10;
+
+                var newvalsums = valsums + op_cost;
 
                 if ((Math.abs(r - target) < Math.abs(bestresult - target))
                         || (Math.abs(r - target) == Math.abs(bestresult - target) && newvalsums < bestvalsums)) {
@@ -139,12 +143,9 @@ function solve_numbers(numbers, target) {
     if (bestresult == target)
         return [bestresult, bestops];
 
-    /* attempt to solve with iddfs */
+    /* attempt to solve with dfs */
     _recurse_solve_numbers(0, numbers, target, numbers.length, [], 0);
     bestops = tidyup_result(bestops);
-
-    if (bestresult == target)
-        return [bestresult, bestops];
 
     /* return best answer */
     return [bestresult, bestops];

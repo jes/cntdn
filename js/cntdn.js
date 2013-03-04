@@ -99,11 +99,17 @@ function tidyup_result(result) {
         "?": "/", "_": "-"
     };
 
+    var dontswap = {
+        "/": 1, "-": 1
+    };
+
     for (var i = 0; i < result.length; i++) {
         var subresult = result[i];
 
-        if (subresult[1] in mapping) {
+        if (subresult[1] in mapping)
             subresult[1] = mapping[subresult[1]];
+
+        if (subresult[1] in mapping || (subresult[0] < subresult[2] && !(subresult[1] in dontswap))) {
             var j = subresult[0];
             subresult[0] = subresult[2];
             subresult[2] = j;
@@ -114,6 +120,7 @@ function tidyup_result(result) {
 }
 
 function solve_numbers(numbers, target) {
+    numbers.sort();
     bestresult = numbers[0];
     bestops = [];
 

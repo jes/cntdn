@@ -106,10 +106,14 @@ function tidyup_result(result) {
     for (var i = 0; i < result.length; i++) {
         var subresult = result[i];
 
-        if (subresult[1] in mapping)
-            subresult[1] = mapping[subresult[1]];
+        var canswap
 
-        if (subresult[1] in mapping || (subresult[0] < subresult[2] && !(subresult[1] in dontswap))) {
+        if (subresult[1] in mapping) {
+            subresult[1] = mapping[subresult[1]];
+            var j = subresult[0];
+            subresult[0] = subresult[2];
+            subresult[2] = j;
+        } else if (subresult[0] < subresult[2] && !(subresult[1] in dontswap)) {
             var j = subresult[0];
             subresult[0] = subresult[2];
             subresult[2] = j;

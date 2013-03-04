@@ -6,7 +6,8 @@ gletters - python gtk solver for the letters game
 tkletters - perl tk solver for the letters game
 
 There is also the game/ directory which contains a very silly and unfinished
-simulator for the countdown game.
+simulator for the countdown game, and js/ which contains an excellent
+javascript solver for the letters and numbers games.
 
 Build and install the solvers with:
 $ mkdir build && cd build

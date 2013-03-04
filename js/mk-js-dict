@@ -15,7 +15,9 @@ while (<>) {
     add_word($_);
 }
 
-print 'var dictionary=' . encode_json($dictionary) . ";\n";
+my $jsondict = encode_json($dictionary);
+$jsondict =~ s/"//g;
+print "var dictionary=$jsondict;\n";
 
 sub add_word {
     my ($word) = @_;

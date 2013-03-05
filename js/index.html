@@ -6,18 +6,24 @@
     <body>
         <h1>Cntdn.js</h1>
 
-        <input type="text" id="letters" onkeyup="javascript:ui_solve_letters()" placeholder="Letters">
+        <form onsubmit="ui_solve_letters(); return false">
+            <input type="text" id="letters" placeholder="Letters">
+            <button type="submit">Solve</button>
+        </form>
         <hr>
         <textarea rows="20" cols="50" id="letters-answer"></textarea>
 
-        <hr><hr>
-        <input type="text" id="num1" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="num2" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="num3" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="num4" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="num5" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="num6" onkeyup="javascript:ui_solve_numbers()" placeholder="Number">
-        <input type="text" id="target" onkeyup="javascript:ui_solve_numbers()" placeholder="Target">
+        <hr>
+        <form onsubmit="ui_solve_numbers(); return false">
+            <input type="text" id="num1" placeholder="Number">
+            <input type="text" id="num2" placeholder="Number">
+            <input type="text" id="num3" placeholder="Number">
+            <input type="text" id="num4" placeholder="Number">
+            <input type="text" id="num5" placeholder="Number">
+            <input type="text" id="num6" placeholder="Number">
+            <input type="text" id="target" placeholder="Target">
+            <button type="submit">Solve</button>
+        </form>
         <hr>
         <textarea rows="20" cols="50" id="numbers-answer"></textarea>
 

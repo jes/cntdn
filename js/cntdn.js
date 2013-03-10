@@ -78,11 +78,11 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
 
                 if ((Math.abs(r - target) < Math.abs(bestresult[0] - target))
                         || (Math.abs(r - target) == Math.abs(bestresult[0] - target) && /*Math.floor(Math.random()*10) < 1)) {*/newvalsums < bestvalsums)) {
-                    bestresult = [r,ni,o,nj];
+                    bestresult = [r,o,ni,nj];
                     bestvalsums = newvalsums;
                 }
 
-                numbers[j] = [r, ni, o, nj];
+                numbers[j] = [r, o, ni, nj];
                 var old_was_gen = was_generated[j];
                 was_generated[j] = true;
 
@@ -107,21 +107,31 @@ function tidyup_result(result) {
         "*": true, "+": true
     };
 
-    if (result.length != 4)
+    if (result.length < 4)
         return result;
 
-    result[1] = tidyup_result(result[1]);
-    result[3] = tidyup_result(result[3]);
+    for (var i = 2; i < result.length; i++) {
+        var child = result[i];
 
-    if (result[2] in mapping) {
-        result[2] = mapping[result[2]];
-        var j = result[1];
-        result[1] = result[3];
+        child = tidyup_result(child);
+
+        if (child[1] == result[1] && swappable[result[1]]) {
+            result.splice(i--, 1);
+            result = result.concat(child.slice(2));
+        } else {
+            result[i] = child;
+        }
+    }
+
+    if (result[1] in mapping) {
+        result[1] = mapping[result[1]];
+        var j = result[2];
+        result[2] = result[3];
         result[3] = j;
-    } else if (result[1][0] < result[3][0] && swappable[result[2]]) {
-        var j = result[1];
-        result[1] = result[3];
-        result[3] = j;
+    } else if (swappable[result[1]]) {
+        childs = result.slice(2).sort(function(a,b) { return b[0] - a[0]; });
+        for (var i = 2; i < result.length; i++)
+            result[i] = childs[i-2];
     }
 
     return result;
@@ -140,20 +150,21 @@ function fullsize(array) {
 }
 
 function serialise_result(result) {
-    if (result.length != 4)
-        return [];
+    var parts = [];
 
-    var leftsteps = serialise_result(result[1]);
-    var rightsteps = serialise_result(result[3]);
+    for (var i = 2; i < result.length; i++) {
+        var child = result[i];
 
-    /* do the shortest half second */
-    if (fullsize(leftsteps) < fullsize(rightsteps)) {
-        var t = leftsteps;
-        leftsteps = rightsteps;
-        rightsteps = t;
+        if (child.length >= 4)
+            parts = parts.concat(serialise_result(child));
     }
 
-    return leftsteps.concat(rightsteps, [[result[0], result[1][0], result[2], result[3][0]]]);
+    parts = parts.sort(function(a,b) { return fullsize(b) - fullsize(a); });
+
+    var sliced = result.slice(2).map(function(l) { return l[0]; });
+    var thispart = [result[0], result[1]].concat(sliced);
+
+    return parts.concat([thispart]);
 }
 
 function stringify_result(serialised, target) {
@@ -161,23 +172,11 @@ function stringify_result(serialised, target) {
 
     serialised = serialised.slice(0);
 
-    var joinable = {
-        "*": true, "+": true
-    };
-
     for (var i = 0; i < serialised.length; i++) {
         var x = serialised[i];
-        var y = serialised[i+1];
 
-        if (i != serialised.length-1 && y[2] == x[2] && joinable[x[2]]) {
-            if (y[1] == x[0]) {
-                y[1] = x[1] + ' ' + x[2] + ' ' + x[3];
-            } else if(y[3] == x[0]) {
-                y[3] = x[1] + ' ' + x[2] + ' ' + x[3];
-            }
-        } else {
-            output += x[1] + ' ' + x[2] + ' ' + x[3] + ' = ' + x[0] + '\n';
-        }
+        var args = x.slice(2);
+        output += args.join(' ' + x[1] + ' ') + ' = ' + x[0] + '\n';
     }
 
     var result = serialised[serialised.length-1][0];
@@ -187,11 +186,24 @@ function stringify_result(serialised, target) {
     return output;
 }
 
+function _solve_numbers(numbers, target) {
+    numbers = numbers.map(function(x) { return [x, false] });
+
+    var was_generated = [];
+    for (var i = 0; i < numbers.length; i++)
+        was_generated.push(false);
+
+    bestresult = [0, 0];
+
+    /* attempt to solve with dfs */
+    _recurse_solve_numbers(numbers, 0, was_generated, target, numbers.length, 0);
+
+    return bestresult;
+}
+
 function solve_numbers(numbers, target) {
     numbers.sort();
     bestresult = [numbers[0], numbers[0]];
-
-    numbers = numbers.map(function(x) { return [x, false] });
 
     /* see if one of these numbers is the answer */
     for (var i = 1; i < numbers.length; i++) {
@@ -203,11 +215,5 @@ function solve_numbers(numbers, target) {
     if (bestresult[0] == target)
         return target + " = " + target;
 
-    var was_generated = [];
-    for (var i = 0; i < numbers.length; i++)
-        was_generated.push(false);
-
-    /* attempt to solve with dfs */
-    _recurse_solve_numbers(numbers, 0, was_generated, target, numbers.length, 0);
-    return stringify_result(serialise_result(tidyup_result(bestresult)), target);
+    return stringify_result(serialise_result(tidyup_result(_solve_numbers(numbers, target))), target);
 }

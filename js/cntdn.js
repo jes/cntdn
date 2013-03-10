@@ -150,16 +150,21 @@ function fullsize(array) {
 }
 
 function serialise_result(result) {
-    var parts = [];
+    var childparts = [];
 
     for (var i = 2; i < result.length; i++) {
         var child = result[i];
 
         if (child.length >= 4)
-            parts = parts.concat(serialise_result(child));
+            childparts.push(serialise_result(child));
     }
 
-    parts = parts.sort(function(a,b) { return fullsize(b) - fullsize(a); });
+    childparts = childparts.sort(function(a,b) { return fullsize(b) - fullsize(a); });
+
+    var parts = [];
+    for (var i = 0; i < childparts.length; i++) {
+        parts = parts.concat(childparts[i]);
+    }
 
     var sliced = result.slice(2).map(function(l) { return l[0]; });
     var thispart = [result[0], result[1]].concat(sliced);

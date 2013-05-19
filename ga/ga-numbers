@@ -1,0 +1,128 @@
+#!/usr/bin/perl
+# solve the numbers game with a GA (an experiment more than a useful tool)
+# James Stanley 2013
+
+use strict;
+use warnings;
+
+my $target = 344;
+my @nums = (10, 2, 75, 100, 2, 2);
+my @OPS = ('+', '-', '*', '/');
+
+my @population;
+push @population, random_individual() for (1 .. 12);
+
+my $best_individual;
+my $best_score;
+
+$SIG{ALRM} = sub {
+    print stringify($best_individual);
+    exit 0;
+};
+
+# calculate for up to 5 seconds
+alarm 5;
+
+while (1) {
+    my %score;
+
+    $score{$_} = evaluate($_) for @population;
+
+    my @winners = sort { abs($target-$score{$a}) <=> abs($target-$score{$b}) } @population;
+    @winners = @winners[0..2];
+
+    if (!defined $best_score or abs($target-$score{$winners[0]}) < abs($target-$best_score)) {
+        $best_individual = $winners[0];
+        $best_score = $score{$winners[0]};
+        print stringify($best_individual) if $best_score == $target;
+        exit 0 if $best_score == $target;
+    }
+
+    @population = breed(@winners);
+}
+
+sub stringify {
+    my ($genes) = @_;
+
+    my @v = (@nums);
+
+    for (1 .. 5) {
+        $genes =~ s/(.)(.)(.)//;
+        my ($a, $op, $b) = ($1-1, $2, $3-1);
+        $b++ if $b == $a;
+        my ($i, $j) = ($v[$a % @v], $v[$b % @v]);
+        next if $op eq '/' && $j == 0;
+        $v[$a % @v] = eval "$i $op $j";
+        print STDERR $@ if $@;
+        my $r = $v[$a % @v];
+        print "$i $op $j = $r\n";
+        splice @v, $b%@v, 1;
+    }
+}
+
+sub breed {
+    my @parents = @_;
+
+    my @population;
+
+    # crossover of all parents
+    for my $idx1 (0 .. $#parents) {
+        for my $idx2 (0 .. $#parents) {
+            next if $idx1 == $idx2;
+
+            my $cross = int rand 15;
+
+            push @population, substr($parents[$idx1], 0, $cross) . substr($parents[$idx2], $cross);
+        }
+    }
+
+    # mutation of some individuals
+    for my $i (0 .. $#population) {
+        next if rand() < 0.1;
+
+        my $change = int rand 15;
+
+        if(substr($population[$i], $change, 1) =~ /\d/) {
+            substr($population[$i], $change, 1, int rand 6);
+        } else {
+            substr($population[$i], $change, 1, $OPS[rand @OPS]);
+        }
+
+        if ($population[$i] !~ /^(\d[\+\*\/-]\d){5}$/) {
+            die $population[$i];
+        }
+    }
+
+    return @population;
+}
+
+sub evaluate {
+    my ($genes) = @_;
+
+    my @v = (@nums);
+
+    for (1 .. 5) {
+        $genes =~ s/(.)(.)(.)//;
+        my ($a, $op, $b) = ($1-1, $2, $3-1);
+        $b++ if $b == $a;
+        my ($i, $j) = ($v[$a % @v], $v[$b % @v]);
+        next if $op eq '/' && $j == 0;
+        $v[$a % @v] = eval "$i $op $j";
+        print STDERR $@ if $@;
+        splice @v, $b%@v, 1;
+    }
+
+    return $v[0];
+}
+
+sub random_individual {
+    my $i = '';
+
+    for (1 .. 5) {
+        $i .= 1 + int rand 6;
+        $i .= $OPS[rand @OPS];
+        $i .= 1 + int rand 6;
+    }
+
+    return $i;
+}

@@ -45,6 +45,15 @@ var OPS = {
     "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
+var OPCOST = {
+    "+": 1,
+    "-": 1.05,
+    "_": 1.05,
+    "*": 1.2,
+    "/": 1.3,
+    "?": 1.3,
+};
+
 function _recurse_solve_numbers(numbers, searchedi, was_generated, target, levels, valsums, trickshot) {
     levels--;
 
@@ -73,6 +82,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 var op_cost = Math.abs(r);
                 while (op_cost % 10 == 0 && op_cost != 0)
                     op_cost /= 10;
+                op_cost *= OPCOST[o];
 
                 var newvalsums = valsums + op_cost;
 
@@ -86,7 +96,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 var old_was_gen = was_generated[j];
                 was_generated[j] = true;
 
-                if (levels > 0)
+                if (levels > 0 && (trickshot || bestresult[0] != target || newvalsums < bestvalsums))
                     _recurse_solve_numbers(numbers, i+1, was_generated, target, levels, newvalsums, trickshot);
 
                 was_generated[j] = old_was_gen;

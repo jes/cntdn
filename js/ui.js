@@ -45,7 +45,7 @@ function _ui_solve_numbers(trickshot) {
     var target = parseInt(document.getElementById('target').value, 10);
 
     if (numbers.length == 6)
-        _gaq.push(['_trackEvent', 'solve', 'numbers', numbers.join(',')+','+target]);
+        _gaq.push(['_trackEvent', 'solve', trickshot ? 'trickshot' : 'numbers', numbers.join(',')+','+target]);
 
     if (isNaN(target)) {
         document.getElementById('numbers-answer').innerHTML = 'Invalid target';

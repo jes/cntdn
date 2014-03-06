@@ -1,16 +1,38 @@
+var timeout;
+
 function ui_solve_letters() {
+    var elem = document.getElementById('letters');
+    var top = elem.offsetTop;
+    while (elem = elem.offsetParent)
+        top += elem.offsetTop;
+    window.scrollTo(0, top);
+
     var letters = document.getElementById('letters').value;
+
+    clearTimeout(timeout);
+    if (letters.length > 5) {
+        /* wait 5 seconds, and if no more letters come post the event */
+        timeout = setTimeout(function() {
+            _gaq.push(['_trackEvent', 'solve', 'letters', letters.toLowerCase()]);
+        }, 5000);
+    }
 
     var result = [];
 
-    solve_letters(letters, function(word) { result.push(word); });
+    solve_letters(letters.toLowerCase(), function(word) { result.push(word); });
 
     result.sort(function(a, b) { return b.length - a.length; });
 
-    document.getElementById('letters-answer').value = result.join("\n");
+    document.getElementById('letters-answer').innerHTML = result.join("\n");
 }
 
-function ui_solve_numbers() {
+function ui_reset_letters() {
+    document.getElementById('letters').value = '';
+
+    ui_solve_letters();
+}
+
+function _ui_solve_numbers(trickshot) {
     var numbers = [];
 
     for (var i = 1; i <= 6; i++) {
@@ -21,15 +43,36 @@ function ui_solve_numbers() {
     }
 
     var target = parseInt(document.getElementById('target').value, 10);
+
+    if (numbers.length == 6)
+        _gaq.push(['_trackEvent', 'solve', 'numbers', numbers.join(',')+','+target]);
+
     if (isNaN(target)) {
-        document.getElementById('numbers-answer').value = 'Invalid target';
+        document.getElementById('numbers-answer').innerHTML = 'Invalid target';
         return;
     }
 
-    if (numbers.length == 0) {
-        document.getElementById('numbers-answer').value = 'No numbers';
+    if (numbers.length < 2) {
+        document.getElementById('numbers-answer').innerHTML = 'Not enough numbers';
         return;
     }
 
-    document.getElementById('numbers-answer').value = solve_numbers(numbers, target);
+    document.getElementById('numbers-answer').innerHTML = solve_numbers(numbers, target, trickshot);
+}
+
+function ui_solve_numbers() {
+    _ui_solve_numbers(false);
+}
+
+function ui_solve_trickshot() {
+    _ui_solve_numbers(true);
+}
+
+function ui_reset_numbers() {
+    for (var i = 1; i <= 6; i++) {
+        document.getElementById('num'+i).value = '';
+    }
+    document.getElementById('target').value = '';
+
+    ui_solve_numbers();
 }

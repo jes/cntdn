@@ -45,7 +45,7 @@ var OPS = {
     "?": function(n2, n1) { if (n2 == 0 || n1%n2 != 0) return false; return n1/n2; },
 };
 
-function _recurse_solve_numbers(numbers, searchedi, was_generated, target, levels, valsums) {
+function _recurse_solve_numbers(numbers, searchedi, was_generated, target, levels, valsums, trickshot) {
     levels--;
 
     for (var i = 0; i < numbers.length-1; i++) {
@@ -77,7 +77,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 var newvalsums = valsums + op_cost;
 
                 if ((Math.abs(r - target) < Math.abs(bestresult[0] - target))
-                        || (Math.abs(r - target) == Math.abs(bestresult[0] - target) && /*Math.floor(Math.random()*10) < 1)) {*/newvalsums < bestvalsums)) {
+                        || (Math.abs(r - target) == Math.abs(bestresult[0] - target) && (trickshot ? newvalsums > bestvalsums : newvalsums < bestvalsums))) {
                     bestresult = [r,o,ni,nj];
                     bestvalsums = newvalsums;
                 }
@@ -87,7 +87,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 was_generated[j] = true;
 
                 if (levels > 0)
-                    _recurse_solve_numbers(numbers, i+1, was_generated, target, levels, newvalsums);
+                    _recurse_solve_numbers(numbers, i+1, was_generated, target, levels, newvalsums, trickshot);
 
                 was_generated[j] = old_was_gen;
                 numbers[j] = nj;
@@ -191,7 +191,7 @@ function stringify_result(serialised, target) {
     return output;
 }
 
-function _solve_numbers(numbers, target) {
+function _solve_numbers(numbers, target, trickshot) {
     numbers = numbers.map(function(x) { return [x, false] });
 
     var was_generated = [];
@@ -201,24 +201,28 @@ function _solve_numbers(numbers, target) {
     bestresult = [0, 0];
 
     /* attempt to solve with dfs */
-    _recurse_solve_numbers(numbers, 0, was_generated, target, numbers.length, 0);
+    _recurse_solve_numbers(numbers, 0, was_generated, target, numbers.length, 0, trickshot);
 
     return bestresult;
 }
 
-function solve_numbers(numbers, target) {
+function solve_numbers(numbers, target, trickshot) {
     numbers.sort();
     bestresult = [numbers[0], numbers[0]];
 
-    /* see if one of these numbers is the answer */
-    for (var i = 1; i < numbers.length; i++) {
-        if (Math.abs(numbers[i] - target) < Math.abs(bestresult[0] - target)) {
-            bestresult = [numbers[i], numbers[i]];
-            bestvalsums = numbers[i];
+    /* see if one of these numbers is the answer; with trickshot you'd rather
+     * have an interesting answer that's close than an exact answer
+     */
+    if (!trickshot) {
+        for (var i = 1; i < numbers.length; i++) {
+            if (Math.abs(numbers[i] - target) < Math.abs(bestresult[0] - target)) {
+                bestresult = [numbers[i], numbers[i]];
+                bestvalsums = numbers[i];
+            }
         }
+        if (bestresult[0] == target)
+            return target + " = " + target;
     }
-    if (bestresult[0] == target)
-        return target + " = " + target;
 
-    return stringify_result(serialise_result(tidyup_result(_solve_numbers(numbers, target))), target);
+    return stringify_result(serialise_result(tidyup_result(_solve_numbers(numbers, target, trickshot))), target);
 }

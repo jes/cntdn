@@ -33,6 +33,42 @@ function solve_letters(letters, cb) {
     _recurse_solve_letters(letters, dictionary, {}, cb, '');
 }
 
+function sufficient_letters(word, letters) {
+    var count = {};
+
+    for (var i = 0; i < letters.length; i++) {
+        if (!count[letters.charAt(i)])
+            count[letters.charAt(i)] = 0;
+        count[letters.charAt(i)]++;
+    }
+
+    for (var i = 0; i < word.length; i++) {
+        if (!count[word.charAt(i)])
+            return false;
+        count[word.charAt(i)]--;
+        if (count[word.charAt(i)] < 0)
+            return false;
+    }
+
+    return true;
+}
+
+function word_in_dictionary(word) {
+    var node = dictionary;
+    var idx = 0;
+
+    while (idx < word.length) {
+        node = node[word.charAt(idx)];
+        idx++;
+        if (!node)
+            return false;
+    }
+
+    if (!node[0])
+        return false;
+    return true;
+}
+
 var bestdiff;
 var bestvalsums;
 

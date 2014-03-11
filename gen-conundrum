@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+# generate a conundrum
+# James Stanley 2014
+
+use strict;
+use warnings;
+
+my %words;
+my %have9;
+
+while (my $word = <>) {
+    chomp $word;
+
+    if (length $word < 9) {
+        push @{ $words{length $word} }, $word;
+    } elsif (length $word == 9) {
+        push @{ $have9{join '', sort(split(//, $word))} }, $word;
+    }
+}
+
+while (1) {
+    my $w1 = $words{4}[rand @{ $words{4} } - 1];
+    my $w2 = $words{5}[rand @{ $words{5} } - 1];
+
+    next if substr($w1, -1, 1) eq substr($w2, 0, 1);
+    my $w = "$w1$w2";
+    if ($have9{join '', sort(split(//, $w))}) {
+        my @words;
+        for my $word (@{ $have9{join '', sort(split(//, $w))} }) {
+            push @words, $word if $word ne "$w1$w2" and $word ne "$w2$w1";
+        }
+        print "$w1$w2 => ", join(', ', @words), "\n" if @words;
+        
+        last;
+    }
+}

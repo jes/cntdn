@@ -118,6 +118,8 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 var op_cost = Math.abs(r);
                 while (op_cost % 10 == 0 && op_cost != 0)
                     op_cost /= 10;
+                if ((ni[0] == 10 || nj[0] == 10) && o == '*') // HACK: multiplication by 10 is cheap
+                    op_cost = 1;
                 op_cost *= OPCOST[o];
 
                 var newvalsums = valsums + op_cost;

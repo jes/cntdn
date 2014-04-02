@@ -19,11 +19,16 @@ function ui_solve_letters() {
 
     var result = [];
 
-    solve_letters(letters.toLowerCase(), function(word) { result.push(word); });
+    solve_letters(letters.toLowerCase(), function(word, c) { result.push([word, c]); });
 
-    result.sort(function(a, b) { return b.length - a.length; });
+    result.sort(function(a, b) {
+        if (b[0].length != a[0].length)
+            return b[0].length - a[0].length;
+        else
+            return b[1] - a[1];
+    });
 
-    document.getElementById('letters-answer').innerHTML = result.join("\n");
+    document.getElementById('letters-answer').innerHTML = result.map(function(a) { return a[0]; }).join("\n");
 }
 
 function ui_reset_letters() {

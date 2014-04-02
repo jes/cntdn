@@ -7,7 +7,7 @@
 
 function _recurse_solve_letters(letters, node, used_letter, cb, answer) {
     if (node[0])
-        cb(answer);
+        cb(answer, node[0]);
 
     if (answer.length == letters.length)
         return;

@@ -19,17 +19,22 @@ while (<>) {
 
 my $jsondict = encode_json($dictionary);
 $jsondict =~ s/"//g;
-my $y1 = '{0:1,s:{0:1}}';
-$jsondict =~ s/\Q$y1\E/y1/g;
-my $y2 = '{i:{n:{g:{0:1}}}}';
-$jsondict =~ s/\Q$y2\E/y2/g;
-my $y3 = '{n:{g:{0:1}}}';
-$jsondict =~ s/\Q$y3\E/y3/g;
-my $y4 = '{g:{0:1}}';
-$jsondict =~ s/\Q$y4\E/y4/g;
-my $y5 = '{0:1}';
-$jsondict =~ s/\Q$y5\E/y5/g;
-print "var y1=$y1;var y2=$y2;var y3=$y3;var y4=$y4;var y5=$y5;var dictionary=$jsondict;\n";
+my $x = '{0:1,s:{0:1}}';
+$jsondict =~ s/\Q$x\E/x/g;
+my $y = '{i:{n:{g:{0:1}}}}';
+$jsondict =~ s/\Q$y\E/y/g;
+my $z = '{0:1}';
+$jsondict =~ s/\Q$z\E/z/g;
+
+my $morevars = '';
+for my $l ('a'..'z') {
+    my $u = uc $l;
+    my $t = "{$l:z}";
+    $jsondict =~ s/\Q$t\E/$u/g;
+    $morevars .= "var $u=$t;";
+}
+
+print "var x=$x;var y=$y;var z=$z;${morevars}var dictionary=$jsondict;\n";
 
 sub add_word {
     my ($word, $count) = @_;

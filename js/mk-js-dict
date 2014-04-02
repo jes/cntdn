@@ -12,7 +12,9 @@ my $dictionary = {};
 while (<>) {
     chomp;
 
-    add_word($_);
+    my ($w, $count) = split /\s+/;
+
+    add_word($w => $count);
 }
 
 my $jsondict = encode_json($dictionary);
@@ -30,7 +32,7 @@ $jsondict =~ s/\Q$y5\E/y5/g;
 print "var y1=$y1;var y2=$y2;var y3=$y3;var y4=$y4;var y5=$y5;var dictionary=$jsondict;\n";
 
 sub add_word {
-    my ($word) = @_;
+    my ($word, $count) = @_;
 
     my $n = $dictionary;
 
@@ -47,5 +49,5 @@ sub add_word {
         $n = $n->{$c};
     }
 
-    $n->{0} = 1;
+    $n->{0} = $count ? $count : 1;
 }

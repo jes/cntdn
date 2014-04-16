@@ -1,2 +1,4 @@
 This is a javascript solver for the letters and numbers games. To use it,
 include dictionary.js and cntdn.js, and write an equivalent of ui.js.
+
+Online version available at http://incoherency.co.uk/countdown/

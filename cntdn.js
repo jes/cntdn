@@ -125,7 +125,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
                 var newvalsums = valsums + op_cost;
 
                 if ((Math.abs(r - target) < Math.abs(bestresult[0] - target))
-                        || (Math.abs(r - target) == Math.abs(bestresult[0] - target) && (trickshot ? newvalsums > bestvalsums : newvalsums < bestvalsums))) {
+                        || (Math.abs(r - target) == Math.abs(bestresult[0] - target) && (trickshot || newvalsums < bestvalsums))) {
                     bestresult = [r,o,ni,nj];
                     bestvalsums = newvalsums;
                 }
@@ -274,5 +274,3 @@ function solve_numbers(numbers, target, trickshot) {
 
     return stringify_result(serialise_result(tidyup_result(_solve_numbers(numbers, target, trickshot))), target);
 }
-
-document.write("<script src=\"dictionary.js\"></script>");

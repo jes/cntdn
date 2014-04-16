@@ -81,3 +81,5 @@ function ui_reset_numbers() {
 
     ui_solve_numbers();
 }
+
+document.write("<script src=\"dictionary.js\"></script>");

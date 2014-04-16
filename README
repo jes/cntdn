@@ -1,23 +1,2 @@
-This project includes the following programs:
-
-numbers - command-line solver for the numbers game
-letters - command-line solver for the letters game
-gletters - python gtk solver for the letters game
-tkletters - perl tk solver for the letters game
-
-There is also the game/ directory which contains a very silly and unfinished
-simulator for the countdown game, and js/ which contains an excellent
-javascript solver for the letters and numbers games.
-
-Build and install the solvers with:
-$ mkdir build && cd build
-$ cmake .. && make
-# make install
-
-Build and install the game simulator with:
-$ mkdir game/build && cd game/build
-$ cmake .. && make
-# make install
-
-The dictionary is 2of4brif.txt from 12dicts revision 5.
-http://wordlist.sourceforge.net/
+This is a javascript solver for the letters and numbers games. To use it,
+include dictionary.js and cntdn.js, and write an equivalent of ui.js.

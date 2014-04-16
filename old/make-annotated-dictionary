@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my %count;
+
+open( my $fh1, '<', 'counted-words' )
+    or die "can't read counted-words: $!\n";
+while (<$fh1>) {
+    chomp;
+
+    my ($w, $c) = split /\s+/;
+
+    $count{$w} = $c;
+}
+
+open( my $fh2, '<', 'dictionary' )
+    or die "can't read dictionary: $!\n";
+while (my $w = <$fh2>) {
+    chomp $w;
+
+    if ($count{$w}) {
+        print "$w\t$count{$w}\n";
+    } else {
+        print "$w\t1\n";
+    }
+}

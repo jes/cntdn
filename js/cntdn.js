@@ -2,7 +2,7 @@
  *
  * Countdown game solver
  *
- * James Stanley 2013
+ * James Stanley 2014
  */
 
 function _recurse_solve_letters(letters, node, used_letter, cb, answer) {

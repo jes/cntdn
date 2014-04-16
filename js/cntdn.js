@@ -274,3 +274,5 @@ function solve_numbers(numbers, target, trickshot) {
 
     return stringify_result(serialise_result(tidyup_result(_solve_numbers(numbers, target, trickshot))), target);
 }
+
+document.write("<script src=\"dictionary.js\"></script>");

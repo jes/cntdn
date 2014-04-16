@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # Make a javascript trie representing a dictionary
-# James Stanley 2013
+# James Stanley 2014
 
 use strict;
 use warnings;
